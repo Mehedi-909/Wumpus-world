@@ -48,7 +48,7 @@ public class Player {
     }
     public void moveUp(){
         Location uLocation = new Location(location.getRow()-1, location.getCol());
-
+        //checking bound
         if(cave.isValid(uLocation)){
             location.setRow(location.getRow() - 1);
 

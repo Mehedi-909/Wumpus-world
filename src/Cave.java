@@ -118,6 +118,11 @@ public class Cave {
         return location.getRow() >=0 && location.getRow() < tiles.length && location.getCol() >=0 && location.getCol() < tiles.length;
     }
 
+    public int getTileStatus(int row, int col){
+            int hint = tiles[row][col];
+            return hint;
+    }
+
 
     
 }

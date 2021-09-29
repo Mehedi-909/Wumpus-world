@@ -4,11 +4,13 @@ import java.util.ArrayList;
 
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
+import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
@@ -24,6 +26,7 @@ public class App extends Application{
     private int mouseX,mouseY;
     private int currentlySelectedTile = -1;
     Player player = new Player(cave);
+    public int score = 0;
     
 
     @Override
@@ -40,6 +43,22 @@ public class App extends Application{
         Canvas canvas = new Canvas(800,600);
         root.getChildren().add(canvas);
         GraphicsContext gc = canvas.getGraphicsContext2D();
+
+        Button button = new Button();
+      //Setting text to the button
+        button.setText("Start Game");
+        button.setLayoutX(650);
+        button.setLayoutY(350);
+        root.getChildren().add(button);
+        button.setOnAction(new EventHandler<ActionEvent>(){
+            @Override
+            public void handle(ActionEvent event) {
+                
+                //System.out.println("Button pressed");
+                AImove();
+            }
+
+        });
 
         scene.setOnKeyPressed(new EventHandler<KeyEvent>(){
 
@@ -113,10 +132,13 @@ public class App extends Application{
                 //gc.setFill(Color.LIGHT_GRAY);
                 gc.fillRect(0, 0, 800, 600);
 
+                
                 processInput();
+                
                 cave.draw(gc);
                 drawToolBar(gc);
                 player.draw(gc);
+                
                 //gc.drawImage(playerImage, 10, 10);
                 
             }
@@ -124,30 +146,66 @@ public class App extends Application{
         }.start();;
         
         stage.show();
+        //AImove();
 
         
         
+    }
+
+    public void AImove(){
+
+        int hint = player.checkStatus();
+        if(hint  == 0){
+            //System.out.println("OK");
+            player.moveRight();
+            score = score - 1000;
+        }
+        else if(hint  == 1){
+            System.out.println("PIT");
+            score = score - 1000;
+        }
+        else if(hint  == 2){
+            System.out.println("Wumpus");
+            score = score - 1000;
+        }
+        else if(hint  == 3){
+            System.out.println("Gold");
+        }
+        else if(hint  == 10){
+            System.out.println("Breeze");
+        }
+        else if(hint  == 20){
+            System.out.println("Stench");
+        }
+        else if(hint  == 30){
+            System.out.println("Glitter");
+        }
+
     }
 
     public void processInput(){
         for(int i=0;i <input.size(); i++){
             if(input.get(i).equals("RIGHT")){
                 player.moveRight();
+                player.checkStatus();
                 input.remove(i);
                 i--;
             }
             else if(input.get(i).equals("LEFT")){
                 player.moveLeft();
+                player.checkStatus();
                 input.remove(i);
                 i--;
             }
             else if(input.get(i).equals("UP")){
                 player.moveUp();
+                player.checkStatus();
                 input.remove(i);
                 i--;
             }
             else if(input.get(i).equals("DOWN")){
                 player.moveDown();
+                player.checkStatus();
                 input.remove(i);
                 i--;
             }

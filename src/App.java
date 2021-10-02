@@ -1,6 +1,7 @@
 import java.awt.Color;
 import java.io.FileInputStream;
 import java.util.ArrayList;
+import java.util.Random;
 
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
@@ -147,7 +148,7 @@ public class App extends Application{
         }.start();;
         
         stage.show();
-        AImove();
+        //AImove();
 
         
         
@@ -155,47 +156,91 @@ public class App extends Application{
 
     public void AImove(){
 
+        while(goldFound == false){
+            Random r = new Random();
+        int low = 1;
+        int high = 5;
+        int result = r.nextInt(high-low) + low;
+
         int hint = player.checkStatus();
-        if(hint  == 0){
-            //System.out.println("OK");
-            while(goldFound == false){
-                player.moveRight();
-                System.out.println("Moving right");
-                if(player.checkStatus() == 3){
-                    goldFound = true;
-
-                }
-                else if(cave.isValid(player.getPlayerLocation()) == false){
-                    System.out.println("Not found");
-                    goldFound = true;
-
-                }
+        if(result == 1){
+            player.moveRight();
+            if(player.checkStatus() == 3){
+                goldFound = true;
+                System.out.println("Gold found");
 
             }
+        }
+        else if(result == 2){
+            player.moveLeft();
+            if(player.checkStatus() == 3){
+                goldFound = true;
+                System.out.println("Gold found");
+
+            }
+        }
+        else if(result == 3){
+            player.moveUp();
+            if(player.checkStatus() == 3){
+                goldFound = true;
+                System.out.println("Gold found");
+
+            }
+        }
+        else{
+            player.moveDown();
+            if(player.checkStatus() == 3){
+                goldFound = true;
+                System.out.println("Gold found");
+
+            }
+        }
+
+
+        }
+
+        
+
+        // if(hint  == 0){
+        //     //System.out.println("OK");
+        //     while(goldFound == false){
+        //         player.moveRight();
+        //         System.out.println("Moving right");
+        //         if(player.checkStatus() == 3){
+        //             goldFound = true;
+
+        //         }
+        //         else if(cave.isValid(player.getPlayerLocation()) == false){
+        //             System.out.println("Not found");
+        //             goldFound = true;
+
+        //         }
+
+        //     }
             
             
-            score = score - 1000;
-        }
-        else if(hint  == 1){
-            System.out.println("PIT");
-            score = score - 1000;
-        }
-        else if(hint  == 2){
-            System.out.println("Wumpus");
-            score = score - 1000;
-        }
-        else if(hint  == 3){
-            System.out.println("Gold");
-        }
-        else if(hint  == 10){
-            System.out.println("Breeze");
-        }
-        else if(hint  == 20){
-            System.out.println("Stench");
-        }
-        else if(hint  == 30){
-            System.out.println("Glitter");
-        }
+        //     score = score - 1000;
+        // }
+        // else if(hint  == 1){
+        //     System.out.println("PIT");
+        //     score = score - 1000;
+        // }
+        // else if(hint  == 2){
+        //     System.out.println("Wumpus");
+        //     score = score - 1000;
+        // }
+        // else if(hint  == 3){
+        //     System.out.println("Gold");
+        // }
+        // else if(hint  == 10){
+        //     System.out.println("Breeze");
+        // }
+        // else if(hint  == 20){
+        //     System.out.println("Stench");
+        // }
+        // else if(hint  == 30){
+        //     System.out.println("Glitter");
+        // }
 
     }
 

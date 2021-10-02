@@ -37,6 +37,9 @@ public class Player {
             location.setCol(location.getCol() + 1);
 
         }
+        else{
+            System.out.println("Not found");
+        }
         
     }
     public void moveLeft(){
@@ -73,33 +76,13 @@ public class Player {
         int row = location.getRow();
         int col = location.getCol();
         int hint = cave.getTileStatus(row, col);
-        // if(hint  == 0){
-        //     System.out.println("OK");
-        //     score = score - 1;
-        // }
-        // else if(hint  == 1){
-        //     System.out.println("PIT");
-        //     score = score - 1000;
-        // }
-        // else if(hint  == 2){
-        //     System.out.println("Wumpus");
-        //     score = score - 1000;
-        // }
-        // else if(hint  == 3){
-        //     System.out.println("Gold");
-        // }
-        // else if(hint  == 10){
-        //     System.out.println("Breeze");
-        // }
-        // else if(hint  == 20){
-        //     System.out.println("Stench");
-        // }
-        // else if(hint  == 30){
-        //     System.out.println("Glitter");
-        // }
-
+        
         return hint;
 
+    }
+
+    public Location getPlayerLocation(){
+        return location;
     }
     
 }

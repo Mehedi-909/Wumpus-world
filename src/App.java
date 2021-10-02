@@ -27,6 +27,7 @@ public class App extends Application{
     private int currentlySelectedTile = -1;
     Player player = new Player(cave);
     public int score = 0;
+    public boolean goldFound = false;
     
 
     @Override
@@ -146,7 +147,7 @@ public class App extends Application{
         }.start();;
         
         stage.show();
-        //AImove();
+        AImove();
 
         
         
@@ -157,7 +158,22 @@ public class App extends Application{
         int hint = player.checkStatus();
         if(hint  == 0){
             //System.out.println("OK");
-            player.moveRight();
+            while(goldFound == false){
+                player.moveRight();
+                System.out.println("Moving right");
+                if(player.checkStatus() == 3){
+                    goldFound = true;
+
+                }
+                else if(cave.isValid(player.getPlayerLocation()) == false){
+                    System.out.println("Not found");
+                    goldFound = true;
+
+                }
+
+            }
+            
+            
             score = score - 1000;
         }
         else if(hint  == 1){

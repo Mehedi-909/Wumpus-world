@@ -29,6 +29,8 @@ public class App extends Application{
     Player player = new Player(cave);
     public int score = 0;
     public boolean goldFound = false;
+    public boolean isWumpusDead = false;
+    public boolean isAgentDead = false;
     
 
     @Override
@@ -156,91 +158,74 @@ public class App extends Application{
 
     public void AImove(){
 
-        while(goldFound == false){
+        while(goldFound == false && isAgentDead == false){
             Random r = new Random();
-        int low = 1;
-        int high = 5;
-        int result = r.nextInt(high-low) + low;
+            int low = 1;
+            int high = 5;
+            int result = r.nextInt(high-low) + low;
 
-        int hint = player.checkStatus();
-        if(result == 1){
-            player.moveRight();
-            if(player.checkStatus() == 3){
-                goldFound = true;
-                System.out.println("Gold found");
+            int hint = player.checkStatus();
+            if(result == 1){
+                player.moveRight();
+                checkTile(player.checkStatus());
+                // if(player.checkStatus() == 3){
+                //     goldFound = true;
+            //     System.out.println("Gold found");
 
+                // }
             }
-        }
-        else if(result == 2){
-            player.moveLeft();
-            if(player.checkStatus() == 3){
-                goldFound = true;
-                System.out.println("Gold found");
-
+            else if(result == 2){
+                player.moveLeft();
+                checkTile(player.checkStatus());
+            
             }
-        }
-        else if(result == 3){
-            player.moveUp();
-            if(player.checkStatus() == 3){
-                goldFound = true;
-                System.out.println("Gold found");
-
+            else if(result == 3){
+                player.moveUp();
+                checkTile(player.checkStatus());
             }
-        }
-        else{
-            player.moveDown();
-            if(player.checkStatus() == 3){
-                goldFound = true;
-                System.out.println("Gold found");
-
+            else{
+                player.moveDown();
+                checkTile(player.checkStatus());
             }
-        }
 
 
         }
 
         
 
-        // if(hint  == 0){
-        //     //System.out.println("OK");
-        //     while(goldFound == false){
-        //         player.moveRight();
-        //         System.out.println("Moving right");
-        //         if(player.checkStatus() == 3){
-        //             goldFound = true;
+        
 
-        //         }
-        //         else if(cave.isValid(player.getPlayerLocation()) == false){
-        //             System.out.println("Not found");
-        //             goldFound = true;
+    }
 
-        //         }
+    public void checkTile(int hint){
 
-        //     }
-            
-            
-        //     score = score - 1000;
-        // }
-        // else if(hint  == 1){
-        //     System.out.println("PIT");
-        //     score = score - 1000;
-        // }
-        // else if(hint  == 2){
-        //     System.out.println("Wumpus");
-        //     score = score - 1000;
-        // }
-        // else if(hint  == 3){
-        //     System.out.println("Gold");
-        // }
-        // else if(hint  == 10){
-        //     System.out.println("Breeze");
-        // }
-        // else if(hint  == 20){
-        //     System.out.println("Stench");
-        // }
-        // else if(hint  == 30){
-        //     System.out.println("Glitter");
-        // }
+        if(hint  == 0){
+            System.out.println("OK");
+            score = score - 1000;
+        }
+        else if(hint  == 1){
+            System.out.println("PIT, Game Over");
+            isAgentDead = true;
+            score = score - 1000;
+        }
+        else if(hint  == 2){
+            System.out.println("Wumpus, Game Over");
+            isAgentDead = true;
+            score = score - 1000;
+        }
+        else if(hint  == 3){
+            System.out.println("Gold found");
+            goldFound = true;
+        }
+        else if(hint  == 10){
+            System.out.println("Breeze");
+        }
+        else if(hint  == 20){
+            System.out.println("Stench");
+        }
+        else if(hint  == 30){
+            System.out.println("Glitter");
+        }
 
     }
 

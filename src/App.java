@@ -1,7 +1,10 @@
 import java.awt.Color;
+import java.io.File;
 import java.io.FileInputStream;
 import java.util.ArrayList;
 import java.util.Random;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
@@ -16,6 +19,9 @@ import javafx.scene.image.Image;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.StackPane;
+import javafx.scene.media.AudioClip;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
 import javafx.stage.*;
 
 public class App extends Application{
@@ -31,6 +37,7 @@ public class App extends Application{
     public boolean goldFound = false;
     public boolean isWumpusDead = false;
     public boolean isAgentDead = false;
+    int rPrev = 9, cPrev = 0, n = 10;
     
 
     @Override
@@ -57,12 +64,30 @@ public class App extends Application{
         button.setOnAction(new EventHandler<ActionEvent>(){
             @Override
             public void handle(ActionEvent event) {
+
+                Timer timer = new Timer();
+        int begin = 0;
+        int timeInterval = 2000;
+        timer.schedule(new TimerTask() {
+            int counter = 0;
+            @Override
+            public void run() {
+                //call the method
+                AImove();
+                counter++;
+                if (counter >= 20){
+                    timer.cancel();
+                }
+            }
+        }, begin, timeInterval);
                 
                 //System.out.println("Button pressed");
-                AImove();
+                //AImove();
             }
 
         });
+
+        
 
         scene.setOnKeyPressed(new EventHandler<KeyEvent>(){
 
@@ -157,36 +182,118 @@ public class App extends Application{
     }
 
     public void AImove(){
+        int count = 0;
 
-        while(goldFound == false && isAgentDead == false){
-            Random r = new Random();
-            int low = 1;
-            int high = 5;
-            int result = r.nextInt(high-low) + low;
-
+        while(goldFound == false && isAgentDead == false && count<1000){
             int hint = player.checkStatus();
-            if(result == 1){
-                player.moveRight();
-                checkTile(player.checkStatus());
-                // if(player.checkStatus() == 3){
-                //     goldFound = true;
-            //     System.out.println("Gold found");
+            Location curLocation = player.getPlayerLocation();
+            int currentRow = curLocation.getRow();
+            int currentColumn = curLocation.getCol();
 
-                // }
-            }
-            else if(result == 2){
-                player.moveLeft();
+            int r = currentRow;
+            int c = currentColumn;
+            boolean foundNewPath = false;
+
+
+            if(r >= 1 && !((r-1) == rPrev && c == cPrev) && cave.getTileStatus(r-1, c) ==0 ) {
+                System.out.println("1");
+   			 rPrev = r;
+   			 cPrev = c;
+   			 
+   			 r--;
+   			 foundNewPath = true;
+                Location newLocation = new Location(r, c);
+                
+                player.move(newLocation);
+                System.out.println(r + " " + c);
+                //player.moveRight();
                 checkTile(player.checkStatus());
+                count++;
+   		    }
+
+            else if(r <= (n-2) && !((r+1) == rPrev && c == cPrev) && cave.getTileStatus(r+1, c) ==0) {
+                System.out.println("2");
+   			 rPrev = r;
+   			 cPrev = c;
+   			 
+   			 r++;
+   			 foundNewPath = true;
+                Location newLocation = new Location(r, c);
+                player.move(newLocation);
+                System.out.println(r + " " + c);
+                checkTile(player.checkStatus());
+                count++;
+   		 }
+   		 else if(c >= 1 && !(r == rPrev && (c-1) == cPrev) && cave.getTileStatus(r, c-1) ==0) {
+            System.out.println("3");
+   			 rPrev = r;
+   			 cPrev = c;
+   			 
+   			 c--;
+   			 foundNewPath = true;
+                Location newLocation = new Location(r, c);
+                player.move(newLocation);
+                System.out.println(r + " " + c);
+                checkTile(player.checkStatus());
+                count++;
+   		 }
+   		 else if(c <= (n-2) && !(r == rPrev && (c+1) == cPrev) && cave.getTileStatus(r, c+1) ==0) {
+            System.out.println("4");
+   			 rPrev = r;
+   			 cPrev = c;
+   			 
+   			 c++;
+   			 foundNewPath = true;
+                Location newLocation = new Location(r, c);
+                player.move(newLocation);
+                System.out.println(r + " " + c);
+                checkTile(player.checkStatus());
+                count++;
+   		 }
+   		 
+   		 if(!foundNewPath) {
+            System.out.println("5");
+   			 int temp1 = rPrev;
+   			 int temp2 = cPrev;
+   			 
+   			 rPrev = r;
+   			 cPrev = c;
+   			 
+   			 r = temp1;
+   			 c = temp2;
+                Location newLocation = new Location(r, c);
+                player.move(newLocation);
+                checkTile(player.checkStatus());
+                count++;
+   		 }
+
+            // Random random = new Random();
+            // int low = 1;
+            // int high = 5;
+            // int result = random.nextInt(high-low) + low;
+
+            // if(result == 1){
+            //     player.moveRight();
+            //     checkTile(player.checkStatus());
+            //     // if(player.checkStatus() == 3){
+            //     //     goldFound = true;
+            // //     System.out.println("Gold found");
+
+            //     // }
+            // }
+            // else if(result == 2){
+            //     player.moveLeft();
+            //     checkTile(player.checkStatus());
             
-            }
-            else if(result == 3){
-                player.moveUp();
-                checkTile(player.checkStatus());
-            }
-            else{
-                player.moveDown();
-                checkTile(player.checkStatus());
-            }
+            // }
+            // else if(result == 3){
+            //     player.moveUp();
+            //     checkTile(player.checkStatus());
+            // }
+            // else{
+            //     player.moveDown();
+            //     checkTile(player.checkStatus());
+            // }
 
 
         }
@@ -210,6 +317,13 @@ public class App extends Application{
         }
         else if(hint  == 2){
             System.out.println("Wumpus, Game Over");
+            // AudioClip scream = new AudioClip(this.getClass().getResource("scream.wav").toString());
+            // scream.play();
+            String musicFile = "D:/6th Semester/JavaFx Projects/WumpusWorld/src/images/scream.wav";     // For example
+
+            Media sound = new Media(new File(musicFile).toURI().toString());
+            MediaPlayer mediaPlayer = new MediaPlayer(sound);
+            mediaPlayer.play();
             isAgentDead = true;
             score = score - 1000;
         }

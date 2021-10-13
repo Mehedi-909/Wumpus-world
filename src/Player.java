@@ -71,6 +71,18 @@ public class Player {
         
     }
 
+    public void move(Location locationP){
+
+        //Location dLocation = new Location(location.getRow()+1, location.getCol());
+
+        if(cave.isValid(locationP)){
+            location.setRow(locationP.getRow());
+            location.setCol(locationP.getCol());
+
+        }
+        
+    }
+
     public int checkStatus(){
         
         int row = location.getRow();

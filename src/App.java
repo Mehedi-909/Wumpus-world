@@ -38,6 +38,7 @@ public class App extends Application{
     public boolean isWumpusDead = false;
     public boolean isAgentDead = false;
     int rPrev = 9, cPrev = 0, n = 10;
+    int[][] isVisited = new int[10][10];
     
 
     @Override
@@ -66,20 +67,25 @@ public class App extends Application{
             public void handle(ActionEvent event) {
 
                 Timer timer = new Timer();
-        int begin = 0;
-        int timeInterval = 2000;
-        timer.schedule(new TimerTask() {
-            int counter = 0;
-            @Override
-            public void run() {
-                //call the method
-                AImove();
-                counter++;
-                if (counter >= 20){
-                    timer.cancel();
-                }
-            }
-        }, begin, timeInterval);
+                int begin = 0;
+                int timeInterval = 2000;
+                timer.schedule(new TimerTask() {
+                    int counter = 0;
+                    @Override
+                    public void run() {
+                        for(int i=0; i<10; i++){
+                            for(int j=0; j<10; j++){
+                                isVisited[i][j] = 0;
+                            }
+                        }
+                        //call the method
+                        AImove();
+                        counter++;
+                        if (counter >= 1){
+                            timer.cancel();
+                        }
+                    }
+                }, begin, timeInterval);
                 
                 //System.out.println("Button pressed");
                 //AImove();
@@ -195,7 +201,7 @@ public class App extends Application{
             boolean foundNewPath = false;
 
 
-            if(r >= 1 && !((r-1) == rPrev && c == cPrev) && cave.getTileStatus(r-1, c) ==0 ) {
+            if(r >= 1 && !((r-1) == rPrev && c == cPrev) && (cave.getTileStatus(r-1, c) ==0 || cave.getTileStatus(r-1, c) ==3 ) && isVisited[r-1][c] ==0 ) {
                 System.out.println("1");
    			 rPrev = r;
    			 cPrev = c;
@@ -203,6 +209,7 @@ public class App extends Application{
    			 r--;
    			 foundNewPath = true;
                 Location newLocation = new Location(r, c);
+                isVisited[r][c] =1;
                 
                 player.move(newLocation);
                 System.out.println(r + " " + c);
@@ -211,7 +218,7 @@ public class App extends Application{
                 count++;
    		    }
 
-            else if(r <= (n-2) && !((r+1) == rPrev && c == cPrev) && cave.getTileStatus(r+1, c) ==0) {
+            else if(r <= (n-2) && !((r+1) == rPrev && c == cPrev) && (cave.getTileStatus(r+1, c) ==0 || cave.getTileStatus(r+1, c) ==3 ) && isVisited[r+1][c] ==0) {
                 System.out.println("2");
    			 rPrev = r;
    			 cPrev = c;
@@ -219,12 +226,13 @@ public class App extends Application{
    			 r++;
    			 foundNewPath = true;
                 Location newLocation = new Location(r, c);
+                isVisited[r][c] =1;
                 player.move(newLocation);
                 System.out.println(r + " " + c);
                 checkTile(player.checkStatus());
                 count++;
    		 }
-   		 else if(c >= 1 && !(r == rPrev && (c-1) == cPrev) && cave.getTileStatus(r, c-1) ==0) {
+   		 else if(c >= 1 && !(r == rPrev && (c-1) == cPrev) && (cave.getTileStatus(r, c-1) ==0 || cave.getTileStatus(r, c-1) ==3 ) && isVisited[r][c-1] ==0 ) {
             System.out.println("3");
    			 rPrev = r;
    			 cPrev = c;
@@ -232,12 +240,13 @@ public class App extends Application{
    			 c--;
    			 foundNewPath = true;
                 Location newLocation = new Location(r, c);
+                isVisited[r][c] =1;
                 player.move(newLocation);
                 System.out.println(r + " " + c);
                 checkTile(player.checkStatus());
                 count++;
    		 }
-   		 else if(c <= (n-2) && !(r == rPrev && (c+1) == cPrev) && cave.getTileStatus(r, c+1) ==0) {
+   		 else if(c <= (n-2) && !(r == rPrev && (c+1) == cPrev) && (cave.getTileStatus(r, c+1) ==0 || cave.getTileStatus(r, c+1) ==3 )  && isVisited[r][c+1] ==0) {
             System.out.println("4");
    			 rPrev = r;
    			 cPrev = c;
@@ -245,6 +254,7 @@ public class App extends Application{
    			 c++;
    			 foundNewPath = true;
                 Location newLocation = new Location(r, c);
+                isVisited[r][c] =1;
                 player.move(newLocation);
                 System.out.println(r + " " + c);
                 checkTile(player.checkStatus());
@@ -262,6 +272,7 @@ public class App extends Application{
    			 r = temp1;
    			 c = temp2;
                 Location newLocation = new Location(r, c);
+                //isVisited[r][c] =1;
                 player.move(newLocation);
                 checkTile(player.checkStatus());
                 count++;

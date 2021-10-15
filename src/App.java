@@ -70,29 +70,14 @@ public class App extends Application{
             @Override
             public void handle(ActionEvent event) {
 
-                Timer timer = new Timer();
-                int begin = 0;
-                int timeInterval = 2000;
-                timer.schedule(new TimerTask() {
-                    int counter = 0;
-                    @Override
-                    public void run() {
-                        for(int i=0; i<10; i++){
-                            for(int j=0; j<10; j++){
-                                isVisited[i][j] = 0;
-                            }
-                        }
-                        //call the method
-                        AImove2();
-                        counter++;
-                        if (counter >= 1){
-                            timer.cancel();
-                        }
+                for(int i=0; i<10; i++){
+                    for(int j=0; j<10; j++){
+                        isVisited[i][j] = 0;
                     }
-                }, begin, timeInterval);
+                }
                 
                 //System.out.println("Button pressed");
-                //AImove();
+                AImove2();
             }
 
         });
@@ -196,204 +181,253 @@ public class App extends Application{
     }
 
     public void AImove2(){
-            // Location curLocation = player.getPlayerLocation();
-            // int currentRow = curLocation.getRow();
-            // int currentColumn = curLocation.getCol();
-            // int previousRow = currentRow;
-            // int previousColumn =currentColumn;
-            // player.moveRight();
-            // boolean foundNewPath = false;
 
-            while(goldFound == false && isAgentDead == false ){
 
-                //pRow = player.getPlayerLocation().getRow();
-                //pCol = player.getPlayerLocation().getCol();
-
-                int hint = player.checkStatus();
-                if(hint  == 0){
-                    System.out.println("OK");
-                    Random random = new Random();
-                    int low = 1;
-                    int high = 5;
-                    int result = random.nextInt(high-low) + low;
-
-                    if(result == 1){
+        Timer timer = new Timer();
+                int begin = 0;
+                int timeInterval = 50;
+                timer.schedule(new TimerTask() {
+                    int counter = 0;
+                    @Override
+                    public void run() {
                         
-                        pRow = player.getPlayerLocation().getRow();
-                        pCol = player.getPlayerLocation().getCol();
-                        player.moveRight();
-                        cRow = player.getPlayerLocation().getRow();
-                        cCol = player.getPlayerLocation().getCol();
-                         
-                        checkTile(player.checkStatus());
-                        // if(player.checkStatus() == 3){
-                        //     goldFound = true;
-                    //     System.out.println("Gold found");
-
-                        // }
+                        //call the method
+                        //AImove2();
+                        controlTimer();
+                        counter++;
+                        if (goldFound == true){
+                            timer.cancel();
+                        }
                     }
-                    else if(result == 2){
-                        pRow = player.getPlayerLocation().getRow();
-                        pCol = player.getPlayerLocation().getCol();
-                        player.moveLeft();
-                        cRow = player.getPlayerLocation().getRow();
-                        cCol = player.getPlayerLocation().getCol();
-                        
-                        checkTile(player.checkStatus());
+                }, begin, timeInterval);
             
-                    }
-                    else if(result == 3){
-                        pRow = player.getPlayerLocation().getRow();
-                        pCol = player.getPlayerLocation().getCol();
-                        player.moveUp();
-                        cRow = player.getPlayerLocation().getRow();
-                        cCol = player.getPlayerLocation().getCol();
-                        
-                        checkTile(player.checkStatus());
-                    }
-                    else{
-                        pRow = player.getPlayerLocation().getRow();
-                        pCol = player.getPlayerLocation().getCol();
-                        player.moveDown();
-                        cRow = player.getPlayerLocation().getRow();
-                        cCol = player.getPlayerLocation().getCol();
-                        
-                        checkTile(player.checkStatus());
-                    }
+
+            
+
+    }
+
+    public void controlTimer(){
+
+        //while(goldFound == false && isAgentDead == false ){
+
+            //pRow = player.getPlayerLocation().getRow();
+            //pCol = player.getPlayerLocation().getCol();
+
+            int hint = player.checkStatus();
+            if(hint  == 0){
+                System.out.println("OK");
+                Random random = new Random();
+                int low = 1;
+                int high = 5;
+                int result = random.nextInt(high-low) + low;
+
+                if(result == 1){
                     
-                    score = score - 1000;
-                }
-
-
-                else if(hint  == 1){
-                    System.out.println("PIT, Game Over");
-                    isAgentDead = true;
-                    score = score - 1000;
-                }
-                else if(hint  == 2){
-                    System.out.println("Wumpus, Game Over");
-                    // AudioClip scream = new AudioClip(this.getClass().getResource("scream.wav").toString());
-                    // scream.play();
-                    String musicFile = "D:/6th Semester/JavaFx Projects/WumpusWorld/src/images/scream.wav";     // For example
-        
-                    Media sound = new Media(new File(musicFile).toURI().toString());
-                    MediaPlayer mediaPlayer = new MediaPlayer(sound);
-                    mediaPlayer.play();
-                    isAgentDead = true;
-                    score = score - 1000;
-                }
-                else if(hint  == 3){
-                    System.out.println("Gold found");
-                    goldFound = true;
-                }
-                else if(hint  == 10){
-                    System.out.println("Breeze");
-                    //cRow = player.getPlayerLocation().getRow();
-                    //cCol = player.getPlayerLocation().getCol(); 
-                    
-                    player.move(new Location(pRow, pCol));
-                    //upper right
-                    if(pRow > cRow && cRow >= pCol && cCol < pCol){
-                        knowledgeBoard[cRow][pCol].tileID = 1;
-
-                    }
-                    else if(pRow > cRow && cRow >= pCol && cCol > pCol){
-                        knowledgeBoard[cRow][pCol].tileID = 1;
-
-                    }
-                    else if(pRow < cRow && cRow >= pCol && cCol > pCol){
-                        knowledgeBoard[cRow][pCol].tileID = 1;
-                        
-                    }
-                    else if(pRow < cRow && cRow >= pCol && cCol < pCol){
-                        knowledgeBoard[cRow][pCol].tileID = 1;
-                        
-                    }
-                    else if(pRow > cRow && cRow < pCol && cCol < pCol){
-                        knowledgeBoard[pRow][cCol].tileID = 1;
-                        
-                    }
-                    else if(pRow < cRow && cRow < pCol && cCol < pCol){
-                        knowledgeBoard[pRow][cCol].tileID = 1;
-                        
-                    }
-                    else if(pRow < cRow && cRow < pCol && cCol > pCol){
-                        knowledgeBoard[pRow][cCol].tileID = 1;
-                        
-                    }
-                    else if(pRow > cRow && cRow < pCol && cCol > pCol){
-                        knowledgeBoard[pRow][cCol].tileID = 1;
-                        
-                    }
-                    // else {
-                    //     if(cave.isValid(new Location(pRow, cCol))){
-
-                    //         try {
-                    //             knowledgeBoard[pRow][cCol].tileID = 1;
-                    //         } catch (NullPointerException e) {
-                    //             //TODO: handle exception
-                    //             System.out.print("NullPointerException Caught");
-                    //         }
-                            
-
+                    pRow = player.getPlayerLocation().getRow();
+                    pCol = player.getPlayerLocation().getCol();
+                    // if(cave.isValid(new Location(pRow,pCol+1))){
+                    //     if(isVisited[pRow][pCol+1] == 0){
+                    //         player.moveRight();
+                    //         isVisited[pRow][pCol+1] = 1;
+    
                     //     }
-                        
                     // }
-
-                }
-                else if(hint  == 20){
-                    System.out.println("Stench");
+                    
+                    player.moveRight();
                     cRow = player.getPlayerLocation().getRow();
-                    cCol = player.getPlayerLocation().getCol(); 
-                    
-                    player.move(new Location(pRow, pCol));
-                    //upper right
-                    if(pRow > cRow && cRow >= pCol && cCol < pCol){
-                        knowledgeBoard[cRow][pCol].tileID = 2;
+                    cCol = player.getPlayerLocation().getCol();
+                     
+                    checkTile(player.checkStatus());
+                    // if(player.checkStatus() == 3){
+                    //     goldFound = true;
+                //     System.out.println("Gold found");
 
-                    }
-                    else if(pRow > cRow && cRow >= pCol && cCol > pCol){
-                        knowledgeBoard[cRow][pCol].tileID = 2;
-
-                    }
-                    else if(pRow < cRow && cRow >= pCol && cCol > pCol){
-                        knowledgeBoard[cRow][pCol].tileID = 2;
-                        
-                    }
-                    else if(pRow < cRow && cRow >= pCol && cCol < pCol){
-                        knowledgeBoard[cRow][pCol].tileID = 2;
-                        
-                    }
-
-                    else if(pRow > cRow && cRow < pCol && cCol < pCol){
-                        knowledgeBoard[pRow][cCol].tileID = 2;
-                        
-                    }
-                    else if(pRow < cRow && cRow < pCol && cCol < pCol){
-                        knowledgeBoard[pRow][cCol].tileID = 2;
-                        
-                    }
-                    else if(pRow < cRow && cRow < pCol && cCol > pCol){
-                        knowledgeBoard[pRow][cCol].tileID = 2;
-                        
-                    }
-                    else if(pRow > cRow && cRow < pCol && cCol > pCol){
-                        knowledgeBoard[pRow][cCol].tileID = 2;
-                        
-                    }
-                    // else {
-                    //     if(cave.isValid(new Location(pRow, cCol))){
-                    //         knowledgeBoard[pRow][cCol].tileID = 2;
-
-                    //     }
-                        
                     // }
                 }
-                else if(hint  == 30){
-                    System.out.println("Glitter");
+                else if(result == 2){
+                    pRow = player.getPlayerLocation().getRow();
+                    pCol = player.getPlayerLocation().getCol();
+                    // if(cave.isValid(new Location(pRow,pCol-1))){
+                    //     if(isVisited[pRow][pCol-1] == 0){
+                    //         player.moveLeft();
+                    //         isVisited[pRow][pCol-1] = 1;
+                            
+                    //     }
+                    // }
+                    
+                    player.moveLeft();
+                    cRow = player.getPlayerLocation().getRow();
+                    cCol = player.getPlayerLocation().getCol();
+                    
+                    checkTile(player.checkStatus());
+        
                 }
+                else if(result == 3){
+                    pRow = player.getPlayerLocation().getRow();
+                    pCol = player.getPlayerLocation().getCol();
+                    // if(cave.isValid(new Location(pRow-1,pCol))){
+                    //     if(isVisited[pRow-1][pCol] == 0){
+                    //         player.moveUp();
+                    //         isVisited[pRow-1][pCol] = 1;
+                    //     }
+                    // }
+                    
+                    player.moveUp();
+                    cRow = player.getPlayerLocation().getRow();
+                    cCol = player.getPlayerLocation().getCol();
+                    
+                    checkTile(player.checkStatus());
+                }
+                else{
+                    pRow = player.getPlayerLocation().getRow();
+                    pCol = player.getPlayerLocation().getCol();
+                    // if(cave.isValid(new Location(pRow+1,pCol))){
+                    //     if(isVisited[pRow+1][pCol] == 0){
+                    //         player.moveDown();
+                    //         isVisited[pRow+1][pCol] = 1;
+                    //     }
+                    // }
+                    
+                    player.moveDown();
+                    cRow = player.getPlayerLocation().getRow();
+                    cCol = player.getPlayerLocation().getCol();
+                    
+                    checkTile(player.checkStatus());
+                }
+                
+                score = score - 1000;
+            }
+
+
+            else if(hint  == 1){
+                System.out.println("PIT, Game Over");
+                isAgentDead = true;
+                score = score - 1000;
+            }
+            else if(hint  == 2){
+                System.out.println("Wumpus, Game Over");
+                // AudioClip scream = new AudioClip(this.getClass().getResource("scream.wav").toString());
+                // scream.play();
+                String musicFile = "D:/6th Semester/JavaFx Projects/WumpusWorld/src/images/scream.wav";     // For example
+    
+                Media sound = new Media(new File(musicFile).toURI().toString());
+                MediaPlayer mediaPlayer = new MediaPlayer(sound);
+                mediaPlayer.play();
+                isAgentDead = true;
+                score = score - 1000;
+            }
+            else if(hint  == 3){
+                System.out.println("Gold found");
+                goldFound = true;
+            }
+            else if(hint  == 10){
+                System.out.println("Breeze");
+                //cRow = player.getPlayerLocation().getRow();
+                //cCol = player.getPlayerLocation().getCol(); 
+                
+                player.move(new Location(pRow, pCol));
+                //upper right
+                if(pRow > cRow && cRow >= pCol && cCol < pCol){
+                    knowledgeBoard[cRow][pCol].tileID = 1;
+
+                }
+                else if(pRow > cRow && cRow >= pCol && cCol > pCol){
+                    knowledgeBoard[cRow][pCol].tileID = 1;
+
+                }
+                else if(pRow < cRow && cRow >= pCol && cCol > pCol){
+                    knowledgeBoard[cRow][pCol].tileID = 1;
+                    
+                }
+                else if(pRow < cRow && cRow >= pCol && cCol < pCol){
+                    knowledgeBoard[cRow][pCol].tileID = 1;
+                    
+                }
+                else if(pRow > cRow && cRow < pCol && cCol < pCol){
+                    knowledgeBoard[pRow][cCol].tileID = 1;
+                    
+                }
+                else if(pRow < cRow && cRow < pCol && cCol < pCol){
+                    knowledgeBoard[pRow][cCol].tileID = 1;
+                    
+                }
+                else if(pRow < cRow && cRow < pCol && cCol > pCol){
+                    knowledgeBoard[pRow][cCol].tileID = 1;
+                    
+                }
+                else if(pRow > cRow && cRow < pCol && cCol > pCol){
+                    knowledgeBoard[pRow][cCol].tileID = 1;
+                    
+                }
+                // else {
+                //     if(cave.isValid(new Location(pRow, cCol))){
+
+                //         try {
+                //             knowledgeBoard[pRow][cCol].tileID = 1;
+                //         } catch (NullPointerException e) {
+                //             //TODO: handle exception
+                //             System.out.print("NullPointerException Caught");
+                //         }
+                        
+
+                //     }
+                    
+                // }
 
             }
+            else if(hint  == 20){
+                System.out.println("Stench");
+                cRow = player.getPlayerLocation().getRow();
+                cCol = player.getPlayerLocation().getCol(); 
+                
+                player.move(new Location(pRow, pCol));
+                //upper right
+                if(pRow > cRow && cRow >= pCol && cCol < pCol){
+                    knowledgeBoard[cRow][pCol].tileID = 2;
+
+                }
+                else if(pRow > cRow && cRow >= pCol && cCol > pCol){
+                    knowledgeBoard[cRow][pCol].tileID = 2;
+
+                }
+                else if(pRow < cRow && cRow >= pCol && cCol > pCol){
+                    knowledgeBoard[cRow][pCol].tileID = 2;
+                    
+                }
+                else if(pRow < cRow && cRow >= pCol && cCol < pCol){
+                    knowledgeBoard[cRow][pCol].tileID = 2;
+                    
+                }
+
+                else if(pRow > cRow && cRow < pCol && cCol < pCol){
+                    knowledgeBoard[pRow][cCol].tileID = 2;
+                    
+                }
+                else if(pRow < cRow && cRow < pCol && cCol < pCol){
+                    knowledgeBoard[pRow][cCol].tileID = 2;
+                    
+                }
+                else if(pRow < cRow && cRow < pCol && cCol > pCol){
+                    knowledgeBoard[pRow][cCol].tileID = 2;
+                    
+                }
+                else if(pRow > cRow && cRow < pCol && cCol > pCol){
+                    knowledgeBoard[pRow][cCol].tileID = 2;
+                    
+                }
+                // else {
+                //     if(cave.isValid(new Location(pRow, cCol))){
+                //         knowledgeBoard[pRow][cCol].tileID = 2;
+
+                //     }
+                    
+                // }
+            }
+            else if(hint  == 30){
+                System.out.println("Glitter");
+            }
+
+        //}
 
     }
 

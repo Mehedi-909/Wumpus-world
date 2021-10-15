@@ -37,9 +37,7 @@ public class Player {
             location.setCol(location.getCol() + 1);
 
         }
-        else{
-            System.out.println("Not found");
-        }
+        
         
     }
     public void moveLeft(){

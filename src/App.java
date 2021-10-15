@@ -190,7 +190,7 @@ public class App extends Application{
     public void AImove(){
         int count = 0;
 
-        while(goldFound == false && isAgentDead == false && count<1000){
+        while(goldFound == false && isAgentDead == false ){
             int hint = player.checkStatus();
             Location curLocation = player.getPlayerLocation();
             int currentRow = curLocation.getRow();
@@ -272,7 +272,7 @@ public class App extends Application{
    			 r = temp1;
    			 c = temp2;
                 Location newLocation = new Location(r, c);
-                //isVisited[r][c] =1;
+                isVisited[r][c] =1;
                 player.move(newLocation);
                 checkTile(player.checkStatus());
                 count++;

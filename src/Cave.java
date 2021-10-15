@@ -114,6 +114,8 @@ public class Cave {
         }
     }
 
+    
+
     public boolean isValid(Location location){
         return location.getRow() >=0 && location.getRow() < tiles.length && location.getCol() >=0 && location.getCol() < tiles.length;
     }

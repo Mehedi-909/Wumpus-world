@@ -39,6 +39,10 @@ public class App extends Application{
     public boolean isAgentDead = false;
     int rPrev = 9, cPrev = 0, n = 10;
     int[][] isVisited = new int[10][10];
+    Board [][] knowledgeBoard = new Board[10][10];
+    Location cLocation;
+    Location pLocation;
+    int cRow,cCol,pRow,pCol;
     
 
     @Override
@@ -79,7 +83,7 @@ public class App extends Application{
                             }
                         }
                         //call the method
-                        AImove();
+                        AImove2();
                         counter++;
                         if (counter >= 1){
                             timer.cancel();
@@ -185,6 +189,212 @@ public class App extends Application{
 
         
         
+    }
+
+    public void updateChaining(){
+
+    }
+
+    public void AImove2(){
+            // Location curLocation = player.getPlayerLocation();
+            // int currentRow = curLocation.getRow();
+            // int currentColumn = curLocation.getCol();
+            // int previousRow = currentRow;
+            // int previousColumn =currentColumn;
+            // player.moveRight();
+            // boolean foundNewPath = false;
+
+            while(goldFound == false && isAgentDead == false ){
+
+                //pRow = player.getPlayerLocation().getRow();
+                //pCol = player.getPlayerLocation().getCol();
+
+                int hint = player.checkStatus();
+                if(hint  == 0){
+                    System.out.println("OK");
+                    Random random = new Random();
+                    int low = 1;
+                    int high = 5;
+                    int result = random.nextInt(high-low) + low;
+
+                    if(result == 1){
+                        
+                        pRow = player.getPlayerLocation().getRow();
+                        pCol = player.getPlayerLocation().getCol();
+                        player.moveRight();
+                        cRow = player.getPlayerLocation().getRow();
+                        cCol = player.getPlayerLocation().getCol();
+                         
+                        checkTile(player.checkStatus());
+                        // if(player.checkStatus() == 3){
+                        //     goldFound = true;
+                    //     System.out.println("Gold found");
+
+                        // }
+                    }
+                    else if(result == 2){
+                        pRow = player.getPlayerLocation().getRow();
+                        pCol = player.getPlayerLocation().getCol();
+                        player.moveLeft();
+                        cRow = player.getPlayerLocation().getRow();
+                        cCol = player.getPlayerLocation().getCol();
+                        
+                        checkTile(player.checkStatus());
+            
+                    }
+                    else if(result == 3){
+                        pRow = player.getPlayerLocation().getRow();
+                        pCol = player.getPlayerLocation().getCol();
+                        player.moveUp();
+                        cRow = player.getPlayerLocation().getRow();
+                        cCol = player.getPlayerLocation().getCol();
+                        
+                        checkTile(player.checkStatus());
+                    }
+                    else{
+                        pRow = player.getPlayerLocation().getRow();
+                        pCol = player.getPlayerLocation().getCol();
+                        player.moveDown();
+                        cRow = player.getPlayerLocation().getRow();
+                        cCol = player.getPlayerLocation().getCol();
+                        
+                        checkTile(player.checkStatus());
+                    }
+                    
+                    score = score - 1000;
+                }
+
+
+                else if(hint  == 1){
+                    System.out.println("PIT, Game Over");
+                    isAgentDead = true;
+                    score = score - 1000;
+                }
+                else if(hint  == 2){
+                    System.out.println("Wumpus, Game Over");
+                    // AudioClip scream = new AudioClip(this.getClass().getResource("scream.wav").toString());
+                    // scream.play();
+                    String musicFile = "D:/6th Semester/JavaFx Projects/WumpusWorld/src/images/scream.wav";     // For example
+        
+                    Media sound = new Media(new File(musicFile).toURI().toString());
+                    MediaPlayer mediaPlayer = new MediaPlayer(sound);
+                    mediaPlayer.play();
+                    isAgentDead = true;
+                    score = score - 1000;
+                }
+                else if(hint  == 3){
+                    System.out.println("Gold found");
+                    goldFound = true;
+                }
+                else if(hint  == 10){
+                    System.out.println("Breeze");
+                    //cRow = player.getPlayerLocation().getRow();
+                    //cCol = player.getPlayerLocation().getCol(); 
+                    
+                    player.move(new Location(pRow, pCol));
+                    //upper right
+                    if(pRow > cRow && cRow >= pCol && cCol < pCol){
+                        knowledgeBoard[cRow][pCol].tileID = 1;
+
+                    }
+                    else if(pRow > cRow && cRow >= pCol && cCol > pCol){
+                        knowledgeBoard[cRow][pCol].tileID = 1;
+
+                    }
+                    else if(pRow < cRow && cRow >= pCol && cCol > pCol){
+                        knowledgeBoard[cRow][pCol].tileID = 1;
+                        
+                    }
+                    else if(pRow < cRow && cRow >= pCol && cCol < pCol){
+                        knowledgeBoard[cRow][pCol].tileID = 1;
+                        
+                    }
+                    else if(pRow > cRow && cRow < pCol && cCol < pCol){
+                        knowledgeBoard[pRow][cCol].tileID = 1;
+                        
+                    }
+                    else if(pRow < cRow && cRow < pCol && cCol < pCol){
+                        knowledgeBoard[pRow][cCol].tileID = 1;
+                        
+                    }
+                    else if(pRow < cRow && cRow < pCol && cCol > pCol){
+                        knowledgeBoard[pRow][cCol].tileID = 1;
+                        
+                    }
+                    else if(pRow > cRow && cRow < pCol && cCol > pCol){
+                        knowledgeBoard[pRow][cCol].tileID = 1;
+                        
+                    }
+                    // else {
+                    //     if(cave.isValid(new Location(pRow, cCol))){
+
+                    //         try {
+                    //             knowledgeBoard[pRow][cCol].tileID = 1;
+                    //         } catch (NullPointerException e) {
+                    //             //TODO: handle exception
+                    //             System.out.print("NullPointerException Caught");
+                    //         }
+                            
+
+                    //     }
+                        
+                    // }
+
+                }
+                else if(hint  == 20){
+                    System.out.println("Stench");
+                    cRow = player.getPlayerLocation().getRow();
+                    cCol = player.getPlayerLocation().getCol(); 
+                    
+                    player.move(new Location(pRow, pCol));
+                    //upper right
+                    if(pRow > cRow && cRow >= pCol && cCol < pCol){
+                        knowledgeBoard[cRow][pCol].tileID = 2;
+
+                    }
+                    else if(pRow > cRow && cRow >= pCol && cCol > pCol){
+                        knowledgeBoard[cRow][pCol].tileID = 2;
+
+                    }
+                    else if(pRow < cRow && cRow >= pCol && cCol > pCol){
+                        knowledgeBoard[cRow][pCol].tileID = 2;
+                        
+                    }
+                    else if(pRow < cRow && cRow >= pCol && cCol < pCol){
+                        knowledgeBoard[cRow][pCol].tileID = 2;
+                        
+                    }
+
+                    else if(pRow > cRow && cRow < pCol && cCol < pCol){
+                        knowledgeBoard[pRow][cCol].tileID = 2;
+                        
+                    }
+                    else if(pRow < cRow && cRow < pCol && cCol < pCol){
+                        knowledgeBoard[pRow][cCol].tileID = 2;
+                        
+                    }
+                    else if(pRow < cRow && cRow < pCol && cCol > pCol){
+                        knowledgeBoard[pRow][cCol].tileID = 2;
+                        
+                    }
+                    else if(pRow > cRow && cRow < pCol && cCol > pCol){
+                        knowledgeBoard[pRow][cCol].tileID = 2;
+                        
+                    }
+                    // else {
+                    //     if(cave.isValid(new Location(pRow, cCol))){
+                    //         knowledgeBoard[pRow][cCol].tileID = 2;
+
+                    //     }
+                        
+                    // }
+                }
+                else if(hint  == 30){
+                    System.out.println("Glitter");
+                }
+
+            }
+
     }
 
     public void AImove(){
@@ -413,6 +623,66 @@ public class App extends Application{
         }
         
 
+    }
+
+    public void checkBreeze(int r, int c){
+        if(cave.getTileStatus(r, c) == 10){
+            if(r == 0 && c==0){
+                knowledgeBoard[r+1][c].tileID = 1;
+                knowledgeBoard[r][c+1].tileID = 1;
+
+            }
+            else if(r == 0 && c==9){
+                knowledgeBoard[r+1][c].tileID = 1;
+                knowledgeBoard[r][c-1].tileID = 1;
+
+            }
+            else if(r == 9 && c==0){
+                knowledgeBoard[r][c+1].tileID = 1;
+                knowledgeBoard[r-1][c].tileID = 1;
+
+            }
+            else if(r == 9 && c==9){
+                knowledgeBoard[r][c-1].tileID = 1;
+                knowledgeBoard[r-1][c].tileID = 1;
+
+            }
+            else if(r == 0){
+                
+                knowledgeBoard[r][c+1].tileID = 1;
+                knowledgeBoard[r][c-1].tileID = 1;
+                knowledgeBoard[r+1][c].tileID = 1;
+
+            }
+            else if(r == 9){
+                knowledgeBoard[r][c+1].tileID = 1;
+                knowledgeBoard[r][c-1].tileID = 1;
+                knowledgeBoard[r-1][c].tileID = 1;
+
+            }
+            else if(c==0){
+                knowledgeBoard[r-1][c].tileID = 1;
+                knowledgeBoard[r][c+1].tileID = 1;
+                knowledgeBoard[r+1][c].tileID = 1;
+
+            }
+            else if(c==9){
+                knowledgeBoard[r-1][c].tileID = 1;
+                knowledgeBoard[r+1][c].tileID = 1;
+                knowledgeBoard[r][c-1].tileID = 1;
+
+            }
+
+            else {
+                knowledgeBoard[r-1][c].tileID = 1;
+                knowledgeBoard[r+1][c].tileID = 1;
+                knowledgeBoard[r][c-1].tileID = 1;
+                knowledgeBoard[r][c+1].tileID = 1;
+
+            }
+
+
+        }
     }
 
     public Location convertClickToLocation(int x, int y){

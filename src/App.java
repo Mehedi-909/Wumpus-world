@@ -3,6 +3,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.util.ArrayList;
 import java.util.Random;
+import java.lang.Thread;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -77,7 +78,12 @@ public class App extends Application{
                 }
                 
                 //System.out.println("Button pressed");
-                AImove2();
+                try {
+                    AImove2();
+                } catch (InterruptedException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
             }
 
         });
@@ -176,16 +182,13 @@ public class App extends Application{
         
     }
 
-    public void updateChaining(){
 
-    }
-
-    public void AImove2(){
+    public void AImove2() throws InterruptedException{
 
 
         Timer timer = new Timer();
                 int begin = 0;
-                int timeInterval = 50;
+                int timeInterval = 500;
                 timer.schedule(new TimerTask() {
                     int counter = 0;
                     @Override
@@ -200,6 +203,12 @@ public class App extends Application{
                         }
                     }
                 }, begin, timeInterval);
+
+        // while(goldFound == false){
+        //     Thread.sleep(1000);
+        //     controlTimer();
+            
+        // }
             
 
             
@@ -221,79 +230,286 @@ public class App extends Application{
                 int high = 5;
                 int result = random.nextInt(high-low) + low;
 
-                if(result == 1){
+                if(cave.isValid(new Location(pRow,pCol+1)) && isVisited[pRow][pCol+1] == 1 && cave.isValid(new Location(pRow,pCol-1)) && isVisited[pRow][pCol-1] == 1 && cave.isValid(new Location(pRow-1,pCol)) && isVisited[pRow-1][pCol] == 1 && cave.isValid(new Location(pRow+1,pCol)) && isVisited[pRow+1][pCol] == 1){
+                    Random random2 = new Random();
+                    int low2 = 1;
+                    int high2 = 5;
+                    int result2 = random2.nextInt(high2-low2) + low2;
+                    if(result2 == 1){
+                        player.moveRight();
+                    }
+                    else if(result2 == 2){
+                        player.moveLeft();
+                    }
+                    else if(result2 == 3){
+                        player.moveUp();
+                    }
+                    else{
+                        player.moveDown();
+                    }
                     
-                    pRow = player.getPlayerLocation().getRow();
-                    pCol = player.getPlayerLocation().getCol();
-                    // if(cave.isValid(new Location(pRow,pCol+1))){
-                    //     if(isVisited[pRow][pCol+1] == 0){
-                    //         player.moveRight();
-                    //         isVisited[pRow][pCol+1] = 1;
-    
-                    //     }
-                    // }
-                    
-                    player.moveRight();
-                    cRow = player.getPlayerLocation().getRow();
-                    cCol = player.getPlayerLocation().getCol();
-                     
-                    checkTile(player.checkStatus());
-                    // if(player.checkStatus() == 3){
-                    //     goldFound = true;
-                //     System.out.println("Gold found");
-
-                    // }
                 }
-                else if(result == 2){
-                    pRow = player.getPlayerLocation().getRow();
-                    pCol = player.getPlayerLocation().getCol();
-                    // if(cave.isValid(new Location(pRow,pCol-1))){
-                    //     if(isVisited[pRow][pCol-1] == 0){
-                    //         player.moveLeft();
-                    //         isVisited[pRow][pCol-1] = 1;
+                else if(pRow == 0 && pCol==0 ){
+                    //player.moveRight();
+                    if(isVisited[pRow+1][pCol] == 1 && isVisited[pRow][pCol+1] == 1){
+                        Random random2 = new Random();
+                        int low2 = 1;
+                        int high2 = 3;
+                        int result2 = random2.nextInt(high2-low2) + low2;
+                        if(result2 == 1){
+                            player.moveRight();
+                        }
+                        else{
+                            player.moveDown();
                             
-                    //     }
-                    // }
+                        }
+                    }
+
+                    else {
+
+                        moveRandom(result);
+                    }
+
+
+    
+                }
+                else if(pRow == 0 && pCol==9 ){
+
+                    //player.moveDown();
+
+                    if(isVisited[pRow+1][pCol] == 1 && isVisited[pRow][pCol-1] == 1){
+                        Random random2 = new Random();
+                        int low2 = 1;
+                        int high2 = 3;
+                        int result2 = random2.nextInt(high2-low2) + low2;
+                        if(result2 == 1){
+                            player.moveLeft();
+                        }
+                        else{
+                            player.moveDown();
+                        }
+
+                    }
+                    else {
+                        moveRandom(result);
+                    }
+
+
+    
+                }
+                else if(pRow == 9 && pCol==0){
+                    //player.moveRight();
+                    if(isVisited[pRow][pCol+1] == 1 && isVisited[pRow-1][pCol] == 1){
+                        Random random2 = new Random();
+                        int low2 = 1;
+                        int high2 = 3;
+                        int result2 = random2.nextInt(high2-low2) + low2;
+                        if(result2 == 1){
+                            player.moveRight();
+                        }
+                        else{
+                            player.moveUp();
+                        }                       
+
+                    }
+                    else {
+                        moveRandom(result);
+                    }
+
+    
+                }
+                else if(pRow == 9 && pCol==9){
+                    //player.moveLeft();
+                    if(isVisited[pRow][pCol-1] == 1 && isVisited[pRow-1][pCol] == 1){
+                        Random random2 = new Random();
+                        int low2 = 1;
+                        int high2 = 3;
+                        int result2 = random2.nextInt(high2-low2) + low2;
+                        if(result2 == 1){
+                            player.moveUp();
+                        }
+                        else{
+                            player.moveLeft();
+                        }
+                               
+
+                    }
+                    else {
+                        moveRandom(result);
+                    }
+
+                }
+                else if(pRow == 0 ){
                     
-                    player.moveLeft();
-                    cRow = player.getPlayerLocation().getRow();
-                    cCol = player.getPlayerLocation().getCol();
                     
-                    checkTile(player.checkStatus());
+                    //player.moveDown();
+                    if(isVisited[pRow][pCol+1] == 1 &&isVisited[pRow][pCol-1] == 1 && isVisited[pRow+1][pCol] == 1){
+                        Random random2 = new Random();
+                        int low2 = 1;
+                        int high2 = 3;
+                        int result2 = random2.nextInt(high2-low2) + low2;
+                        if(result2 == 1){
+                            player.moveDown();
+                        }
+                        else{
+                            player.moveLeft();
+                        }                        
+
+                    }
+                    else {
+                        moveRandom(result);
+                    }
+
+    
+                }
+                else if(pRow == 9 ){
+                    //player.moveUp();
+                    if(isVisited[pRow][pCol+1] == 1 &&isVisited[pRow][pCol-1] == 1 && isVisited[pRow-1][pCol] == 1){
+                        Random random2 = new Random();
+                        int low2 = 1;
+                        int high2 = 3;
+                        int result2 = random2.nextInt(high2-low2) + low2;
+                        if(result2 == 1){
+                            player.moveRight();
+                        }
+                        else{
+                            player.moveUp();
+                        }                        
+
+                    }
+                    else {
+                        moveRandom(result);
+                    }
+ 
+    
+                }
+                else if(pCol==0){
+                    player.moveRight();
+                    if(isVisited[pRow-1][pCol] == 1 &&isVisited[pRow][pCol+1] == 1 && isVisited[pRow+1][pCol] == 1){
+                        Random random2 = new Random();
+                        int low2 = 1;
+                        int high2 = 3;
+                        int result2 = random2.nextInt(high2-low2) + low2;
+                        if(result2 == 1){
+                            player.moveRight();
+                        }
+                        else{
+                            player.moveUp();
+                        }  
+
+                    }
+                    else {
+                        moveRandom(result);
+                    }
+    
+                }
+                else if(pCol==9 ){
+                    //player.moveLeft();
+                    if(isVisited[pRow-1][pCol] == 1 &&isVisited[pRow+1][pCol] == 1 && isVisited[pRow][pCol-1] == 1){
+                        Random random2 = new Random();
+                        int low2 = 1;
+                        int high2 = 3;
+                        int result2 = random2.nextInt(high2-low2) + low2;
+                        if(result2 == 1){
+                            player.moveUp();
+                        }
+                        else{
+                            player.moveLeft();
+                        }
+
+                    }
+                    else {
+                        moveRandom(result);
+                    }
+                    
+    
+                }
+
+                else {
+                    moveRandom(result);
+                }
+    
+                // else {
+                //     knowledgeBoard[r-1][c].tileID = 1;
+                //     knowledgeBoard[r+1][c].tileID = 1;
+                //     knowledgeBoard[r][c-1].tileID = 1;
+                //     knowledgeBoard[r][c+1].tileID = 1;
+    
+                // }
+
+                // else if(result == 1){
+                    
+                //     pRow = player.getPlayerLocation().getRow();
+                //     pCol = player.getPlayerLocation().getCol();
+                //     if(cave.isValid(new Location(pRow,pCol+1))){
+                //         if(isVisited[pRow][pCol+1] == 0){
+                //             player.moveRight();
+                //             isVisited[pRow][pCol+1] = 1;
+    
+                //         }
+                //     }
+                    
+                //     //player.moveRight();
+                //     cRow = player.getPlayerLocation().getRow();
+                //     cCol = player.getPlayerLocation().getCol();
+                     
+                //     checkTile(player.checkStatus());
+                //     // if(player.checkStatus() == 3){
+                //     //     goldFound = true;
+                // //     System.out.println("Gold found");
+
+                //     // }
+                // }
+                // else if(result == 2){
+                //     pRow = player.getPlayerLocation().getRow();
+                //     pCol = player.getPlayerLocation().getCol();
+                //     if(cave.isValid(new Location(pRow,pCol-1))){
+                //         if(isVisited[pRow][pCol-1] == 0){
+                //             player.moveLeft();
+                //             isVisited[pRow][pCol-1] = 1;
+                            
+                //         }
+                //     }
+                    
+                //     //player.moveLeft();
+                //     cRow = player.getPlayerLocation().getRow();
+                //     cCol = player.getPlayerLocation().getCol();
+                    
+                //     checkTile(player.checkStatus());
         
-                }
-                else if(result == 3){
-                    pRow = player.getPlayerLocation().getRow();
-                    pCol = player.getPlayerLocation().getCol();
-                    // if(cave.isValid(new Location(pRow-1,pCol))){
-                    //     if(isVisited[pRow-1][pCol] == 0){
-                    //         player.moveUp();
-                    //         isVisited[pRow-1][pCol] = 1;
-                    //     }
-                    // }
+                // }
+                // else if(result == 3){
+                //     pRow = player.getPlayerLocation().getRow();
+                //     pCol = player.getPlayerLocation().getCol();
+                //     if(cave.isValid(new Location(pRow-1,pCol))){
+                //         if(isVisited[pRow-1][pCol] == 0){
+                //             player.moveUp();
+                //             isVisited[pRow-1][pCol] = 1;
+                //         }
+                //     }
                     
-                    player.moveUp();
-                    cRow = player.getPlayerLocation().getRow();
-                    cCol = player.getPlayerLocation().getCol();
+                //     //player.moveUp();
+                //     cRow = player.getPlayerLocation().getRow();
+                //     cCol = player.getPlayerLocation().getCol();
                     
-                    checkTile(player.checkStatus());
-                }
-                else{
-                    pRow = player.getPlayerLocation().getRow();
-                    pCol = player.getPlayerLocation().getCol();
-                    // if(cave.isValid(new Location(pRow+1,pCol))){
-                    //     if(isVisited[pRow+1][pCol] == 0){
-                    //         player.moveDown();
-                    //         isVisited[pRow+1][pCol] = 1;
-                    //     }
-                    // }
+                //     checkTile(player.checkStatus());
+                // }
+                // else{
+                //     pRow = player.getPlayerLocation().getRow();
+                //     pCol = player.getPlayerLocation().getCol();
+                //     if(cave.isValid(new Location(pRow+1,pCol))){
+                //         if(isVisited[pRow+1][pCol] == 0){
+                //             player.moveDown();
+                //             isVisited[pRow+1][pCol] = 1;
+                //         }
+                //     }
                     
-                    player.moveDown();
-                    cRow = player.getPlayerLocation().getRow();
-                    cCol = player.getPlayerLocation().getCol();
+                //     //player.moveDown();
+                //     cRow = player.getPlayerLocation().getRow();
+                //     cCol = player.getPlayerLocation().getCol();
                     
-                    checkTile(player.checkStatus());
-                }
+                //     checkTile(player.checkStatus());
+                // }
                 
                 score = score - 1000;
             }
@@ -390,6 +606,7 @@ public class App extends Application{
                     knowledgeBoard[cRow][pCol].tileID = 2;
 
                 }
+                
                 else if(pRow < cRow && cRow >= pCol && cCol > pCol){
                     knowledgeBoard[cRow][pCol].tileID = 2;
                     
@@ -428,6 +645,174 @@ public class App extends Application{
             }
 
         //}
+
+    }
+
+    public void moveRandom(int result){
+
+        if(result == 1){
+                    
+            pRow = player.getPlayerLocation().getRow();
+            pCol = player.getPlayerLocation().getCol();
+            if(cave.isValid(new Location(pRow,pCol+1))){
+                if(isVisited[pRow][pCol+1] == 0){
+                    player.moveRight();
+                    isVisited[pRow][pCol+1] = 1;
+
+                }
+            }
+            else if(cave.isValid(new Location(pRow,pCol-1))){
+                if(isVisited[pRow][pCol-1] == 0){
+                    player.moveLeft();
+                    isVisited[pRow][pCol-1] = 1;
+
+                }
+            }
+            else if(cave.isValid(new Location(pRow-1,pCol))){
+                if(isVisited[pRow-1][pCol] == 0){
+                    player.moveUp();
+                    isVisited[pRow-1][pCol] = 1;
+
+                }
+            }
+            else if(cave.isValid(new Location(pRow+1,pCol))){
+                if(isVisited[pRow+1][pCol] == 0){
+                    player.moveDown();
+                    isVisited[pRow+1][pCol] = 1;
+
+                }
+            }
+            
+            //player.moveRight();
+            cRow = player.getPlayerLocation().getRow();
+            cCol = player.getPlayerLocation().getCol();
+             
+            checkTile(player.checkStatus());
+            // if(player.checkStatus() == 3){
+            //     goldFound = true;
+        //     System.out.println("Gold found");
+
+            // }
+        }
+
+        else if(result == 2){
+            pRow = player.getPlayerLocation().getRow();
+            pCol = player.getPlayerLocation().getCol();
+            if(cave.isValid(new Location(pRow,pCol-1))){
+                if(isVisited[pRow][pCol-1] == 0){
+                    player.moveLeft();
+                    isVisited[pRow][pCol-1] = 1;
+
+                }
+            }
+            else if(cave.isValid(new Location(pRow,pCol+1))){
+                if(isVisited[pRow][pCol+1] == 0){
+                    player.moveRight();
+                    isVisited[pRow][pCol+1] = 1;
+
+                }
+            }
+            
+            else if(cave.isValid(new Location(pRow-1,pCol))){
+                if(isVisited[pRow-1][pCol] == 0){
+                    player.moveUp();
+                    isVisited[pRow-1][pCol] = 1;
+
+                }
+            }
+            else if(cave.isValid(new Location(pRow+1,pCol))){
+                if(isVisited[pRow+1][pCol] == 0){
+                    player.moveDown();
+                    isVisited[pRow+1][pCol] = 1;
+
+                }
+            }
+            
+            //player.moveRight();
+            cRow = player.getPlayerLocation().getRow();
+            cCol = player.getPlayerLocation().getCol();
+             
+            checkTile(player.checkStatus());
+
+        }
+        else if(result == 3){
+            pRow = player.getPlayerLocation().getRow();
+            pCol = player.getPlayerLocation().getCol();
+            if(cave.isValid(new Location(pRow-1,pCol))){
+                if(isVisited[pRow-1][pCol] == 0){
+                    player.moveUp();
+                    isVisited[pRow-1][pCol] = 1;
+
+                }
+            }
+            else if(cave.isValid(new Location(pRow,pCol+1))){
+                if(isVisited[pRow][pCol+1] == 0){
+                    player.moveRight();
+                    isVisited[pRow][pCol+1] = 1;
+
+                }
+            }
+            else if(cave.isValid(new Location(pRow,pCol-1))){
+                if(isVisited[pRow][pCol-1] == 0){
+                    player.moveLeft();
+                    isVisited[pRow][pCol-1] = 1;
+
+                }
+            }
+            
+            else if(cave.isValid(new Location(pRow+1,pCol))){
+                if(isVisited[pRow+1][pCol] == 0){
+                    player.moveDown();
+                    isVisited[pRow+1][pCol] = 1;
+
+                }
+            }
+            
+            //player.moveRight();
+            cRow = player.getPlayerLocation().getRow();
+            cCol = player.getPlayerLocation().getCol();
+             
+            checkTile(player.checkStatus());
+        }
+        else{
+            pRow = player.getPlayerLocation().getRow();
+            pCol = player.getPlayerLocation().getCol();
+            if(cave.isValid(new Location(pRow+1,pCol))){
+                if(isVisited[pRow+1][pCol] == 0){
+                    player.moveDown();
+                    isVisited[pRow+1][pCol] = 1;
+
+                }
+            }
+            else if(cave.isValid(new Location(pRow,pCol+1))){
+                if(isVisited[pRow][pCol+1] == 0){
+                    player.moveRight();
+                    isVisited[pRow][pCol+1] = 1;
+
+                }
+            }
+            else if(cave.isValid(new Location(pRow,pCol-1))){
+                if(isVisited[pRow][pCol-1] == 0){
+                    player.moveLeft();
+                    isVisited[pRow][pCol-1] = 1;
+
+                }
+            }
+            else if(cave.isValid(new Location(pRow-1,pCol))){
+                if(isVisited[pRow-1][pCol] == 0){
+                    player.moveUp();
+                    isVisited[pRow-1][pCol] = 1;
+
+                }
+            }
+            
+            
+            //player.moveRight();
+            cRow = player.getPlayerLocation().getRow();
+            cCol = player.getPlayerLocation().getCol();
+             
+            checkTile(player.checkStatus());
+        }
 
     }
 

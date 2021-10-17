@@ -91,6 +91,22 @@ public class App extends Application{
                 
                 //System.out.println("Button pressed");
                 AImove2();
+                
+            }
+
+        });
+
+        Button manualPlayButton = new Button(); // Setting text to the button
+        manualPlayButton.setText("Manual Play");
+        manualPlayButton.setLayoutX(650);
+        manualPlayButton.setLayoutY(400);
+        root.getChildren().add(manualPlayButton);
+
+        manualPlayButton.setOnAction(new EventHandler<ActionEvent>(){
+            @Override
+            public void handle(ActionEvent event) {
+                processInput();
+
             }
 
         });
@@ -223,6 +239,7 @@ public class App extends Application{
                 cave.draw(gc);
                 drawToolBar(gc);
                 player.draw(gc);
+                //processInput();
                 
                 //gc.drawImage(playerImage, 10, 10);
                 
@@ -256,13 +273,14 @@ public class App extends Application{
                         //AImove2();
                         controlTimer();
                         counter++;
-                        if (goldFound == true || isWumpusDead == true){
+                        if (goldFound == true || isWumpusDead == true || isAgentDead == true){
                             timer.cancel();
+                            //System.out.println("Score : " + score);
                         }
                     }
                 }, begin, timeInterval);
             
-
+                
             
 
     }
@@ -295,6 +313,7 @@ public class App extends Application{
                     // }
                     
                     player.moveRight();
+                    score = score - 1;
                     isVisited[player.getPlayerLocation().getRow()][player.getPlayerLocation().getCol()] = 1;
                     cRow = player.getPlayerLocation().getRow();
                     cCol = player.getPlayerLocation().getCol();
@@ -318,6 +337,8 @@ public class App extends Application{
                     // }
                     
                     player.moveLeft();
+                    score = score - 1;
+
                     isVisited[player.getPlayerLocation().getRow()][player.getPlayerLocation().getCol()] = 1;
                     cRow = player.getPlayerLocation().getRow();
                     cCol = player.getPlayerLocation().getCol();
@@ -336,6 +357,7 @@ public class App extends Application{
                     // }
                     
                     player.moveUp();
+                    score = score - 1;
                     isVisited[player.getPlayerLocation().getRow()][player.getPlayerLocation().getCol()] = 1;
                     cRow = player.getPlayerLocation().getRow();
                     cCol = player.getPlayerLocation().getCol();
@@ -353,6 +375,7 @@ public class App extends Application{
                     // }
                     
                     player.moveDown();
+                    score = score - 1;
                     isVisited[player.getPlayerLocation().getRow()][player.getPlayerLocation().getCol()] = 1;
                     cRow = player.getPlayerLocation().getRow();
                     cCol = player.getPlayerLocation().getCol();
@@ -360,17 +383,21 @@ public class App extends Application{
                     checkTile(player.checkStatus());
                 }
                 
-                score = score - 1000;
+                //score = score - 1000;
             }
 
 
             else if(hint  == 1){
                 System.out.println("PIT, Game Over");
-                isAgentDead = true;
                 score = score - 1000;
+                System.out.println("Score : " + score);
+                isAgentDead = true;
+                
             }
             else if(hint  == 2){
                 System.out.println("Wumpus, Game Over");
+                score = score - 1000;
+                System.out.println("Score : " + score);
                 // AudioClip scream = new AudioClip(this.getClass().getResource("scream.wav").toString());
                 // scream.play();
                 String musicFile = "D:/6th Semester/JavaFx Projects/WumpusWorld/src/images/scream.wav";     // For example
@@ -379,10 +406,12 @@ public class App extends Application{
                 MediaPlayer mediaPlayer = new MediaPlayer(sound);
                 mediaPlayer.play();
                 isAgentDead = true;
-                score = score - 1000;
+                
             }
             else if(hint  == 3){
+                score = score + 1000;
                 System.out.println("Gold found");
+                System.out.println("Score : " + score);
                 isVisited[player.getPlayerLocation().getRow()][player.getPlayerLocation().getCol()] = 1;
                 goldFound = true;
             }
@@ -401,6 +430,7 @@ public class App extends Application{
                 //System.out.println("Previous : " + pRow + "," + pCol);
                 
                 player.move(new Location(pRow, pCol));
+                score = score - 1;
                 isVisited[player.getPlayerLocation().getRow()][player.getPlayerLocation().getCol()] = 1;
                 int rowTemp2 = player.getPlayerLocation().getRow();
                 int colTemp2 = player.getPlayerLocation().getCol();
@@ -429,6 +459,7 @@ public class App extends Application{
                 isWumpusPresent(player.getPlayerLocation().getRow(), player.getPlayerLocation().getCol(),previous,current);
                 
                 player.move(new Location(pRow, pCol));
+                score = score - 1;
                 isVisited[player.getPlayerLocation().getRow()][player.getPlayerLocation().getCol()] = 1;
                 
             }
@@ -446,40 +477,39 @@ public class App extends Application{
             //from down to up
             if(cave.isValid(new Location(row-1,column-1)) && cave.isValid(new Location(row-1,column+1)) &&  cave.isValid(new Location(row-2, column))){
                 if(isStench[row-1][column-1] == 1 || isStench[row-1][column+1] == 1 || isStench[row-2][column] == 1){
-                    
+                    playScream();
                     System.out.println("Wumpus in " + (row-1) + "," + column);
                     Location location = new Location(row-1, column);
                     cave.setTile(location, 404);
-                    String musicFile = "D:/6th Semester/JavaFx Projects/WumpusWorld/src/images/coffin.mp3";
-                    Media sound = new Media(new File(musicFile).toURI().toString());
-                    MediaPlayer mediaPlayer = new MediaPlayer(sound);
-                    mediaPlayer.play();
+                    score = score - 10;
+                    System.out.println("Score " + score);
+                    
                     isWumpusDead = true;
                 }
                 
             }
             else if(cave.isValid(new Location(row-1,column+1)) && cave.isValid(new Location(row+1,column+1)) && cave.isValid(new Location(row,column+2))){
                 if(isStench[row-1][column+1] == 1 || isStench[row+1][column+1] == 1 || isStench[row][column+2] == 1){
+                    playScream();
                     System.out.println("Wumpus in " + row + "," + (column+1));
                     Location location = new Location(row, column+1);
                     cave.setTile(location, 404);
-                    String musicFile = "D:/6th Semester/JavaFx Projects/WumpusWorld/src/images/coffin.mp3";
-                    Media sound = new Media(new File(musicFile).toURI().toString());
-                    MediaPlayer mediaPlayer = new MediaPlayer(sound);
-                    mediaPlayer.play();
+                    score = score - 10;
+                    System.out.println("Score " + score);
+                    playScream();
                     isWumpusDead = true;
                 }
 
             }
             else if(cave.isValid(new Location(row-1,column-1)) && cave.isValid(new Location(row+1,column-1)) && cave.isValid(new Location(row,column-2))){
                 if(isStench[row-1][column-1] == 1 || isStench[row+1][column-1] == 1 || isStench[row][column-2] == 1){
+                    playScream();
                     System.out.println("Wumpus in " + row + "," + (column-1));
                     Location location = new Location(row, column-1);
                     cave.setTile(location, 404);
-                    String musicFile = "D:/6th Semester/JavaFx Projects/WumpusWorld/src/images/coffin.mp3";
-                    Media sound = new Media(new File(musicFile).toURI().toString());
-                    MediaPlayer mediaPlayer = new MediaPlayer(sound);
-                    mediaPlayer.play();
+                    score = score - 10;
+                    System.out.println("Score " + score);
+                    playScream();
                     isWumpusDead = true;
                 }
 
@@ -493,13 +523,13 @@ public class App extends Application{
             if(cave.isValid(new Location(row+1,column-1)) && cave.isValid(new Location(row+1,column+1)) && cave.isValid(new Location(row+2,column))){
                 if(isStench[row+1][column-1] == 1 || isStench[row+1][column+1] == 1 || isStench[row+2][column] == 1){
                     if(isVisited[row+1][column] == 0) {
+                        playScream();
                         System.out.println("Wumpus in " + (row+1) + "," + column);
                         Location location = new Location(row+1, column);
                         cave.setTile(location, 404);
-                        String musicFile = "D:/6th Semester/JavaFx Projects/WumpusWorld/src/images/coffin.mp3";
-                        Media sound = new Media(new File(musicFile).toURI().toString());
-                        MediaPlayer mediaPlayer = new MediaPlayer(sound);
-                        mediaPlayer.play();
+                        score = score - 10;
+                        System.out.println("Score " + score);
+                        playScream();
                         isWumpusDead = true;
                     }
                     
@@ -511,13 +541,13 @@ public class App extends Application{
                 if(isStench[row-1][column+1] == 1 || isStench[row+1][column+1] == 1 || isStench[row][column+2] == 1){
                    
                     if(isVisited[row][column+1] == 0) {
+                        playScream();
                         System.out.println("Wumpus in " + row + "," + (column+1));
                         Location location = new Location(row, column+1);
                         cave.setTile(location, 404);
-                        String musicFile = "D:/6th Semester/JavaFx Projects/WumpusWorld/src/images/coffin.mp3";
-                        Media sound = new Media(new File(musicFile).toURI().toString());
-                        MediaPlayer mediaPlayer = new MediaPlayer(sound);
-                        mediaPlayer.play();
+                        score = score - 10;
+                        System.out.println("Score " + score);
+                        playScream();
                         isWumpusDead = true;
                     }
                 }
@@ -527,13 +557,13 @@ public class App extends Application{
                 if(isStench[row-1][column-1] == 1 || isStench[row+1][column-1] == 1 || isStench[row][column-2] == 1){
                     
                     if(isVisited[row][column-1] == 0) {
+                        playScream();
                         System.out.println("Wumpus in " + row + "," + (column-1));
                         Location location = new Location(row, column-1);
                         cave.setTile(location, 404);
-                        String musicFile = "D:/6th Semester/JavaFx Projects/WumpusWorld/src/images/coffin.mp3";
-                        Media sound = new Media(new File(musicFile).toURI().toString());
-                        MediaPlayer mediaPlayer = new MediaPlayer(sound);
-                        mediaPlayer.play();
+                        score = score - 10;
+                        System.out.println("Score " + score);
+                        playScream();
                         isWumpusDead = true;
                     }
                 }
@@ -549,13 +579,13 @@ public class App extends Application{
                 if(isStench[row-1][column-1] == 1 || isStench[row+1][column-1] == 1 || isStench[row][column-2] == 1){
                     
                     if(isVisited[row][column-1] == 0) {
+                        playScream();
                         System.out.println("Wumpus in " + row + "," + (column-1));
                         Location location = new Location(row, column-1);
                         cave.setTile(location, 404);
-                        String musicFile = "D:/6th Semester/JavaFx Projects/WumpusWorld/src/images/coffin.mp3";
-                        Media sound = new Media(new File(musicFile).toURI().toString());
-                        MediaPlayer mediaPlayer = new MediaPlayer(sound);
-                        mediaPlayer.play();
+                        score = score - 10;
+                        System.out.println("Score " + score);
+                        playScream();
                         isWumpusDead = true;
                     }
                 }
@@ -565,13 +595,13 @@ public class App extends Application{
                 if(isStench[row+1][column+1] == 1 || isStench[row+1][column-1] == 1 || isStench[row+2][column] == 1){
                     
                     if(isVisited[row+1][column] == 0) {
+                        playScream();
                         System.out.println("Wumpus in " + (row+1) + "," + column);
                         Location location = new Location(row+1, column);
                         cave.setTile(location, 404);
-                        String musicFile = "D:/6th Semester/JavaFx Projects/WumpusWorld/src/images/coffin.mp3";
-                        Media sound = new Media(new File(musicFile).toURI().toString());
-                        MediaPlayer mediaPlayer = new MediaPlayer(sound);
-                        mediaPlayer.play();
+                        score = score - 10;
+                        System.out.println("Score " + score);
+                        playScream();
                         isWumpusDead = true;
                     }
                 }
@@ -581,13 +611,13 @@ public class App extends Application{
                 if(isStench[row-1][column-1] == 1 || isStench[row-1][column+1] == 1 || isStench[row-2][column] == 1){
                     
                     if(isVisited[row-1][column] == 0) {
+                        playScream();
                         System.out.println("Wumpus in " + (row-1) + "," + column);
                         Location location = new Location(row-1, column);
                         cave.setTile(location, 404);
-                        String musicFile = "D:/6th Semester/JavaFx Projects/WumpusWorld/src/images/coffin.mp3";
-                        Media sound = new Media(new File(musicFile).toURI().toString());
-                        MediaPlayer mediaPlayer = new MediaPlayer(sound);
-                        mediaPlayer.play();
+                        score = score - 10;
+                        System.out.println("Score " + score);
+                        playScream();
                         isWumpusDead = true;
                     }
                 }
@@ -601,13 +631,13 @@ public class App extends Application{
                 if(isStench[row-1][column+1] == 1 || isStench[row+1][column+1] == 1 || isStench[row][column+2] == 1){
                     
                     if(isVisited[row][column+1] == 0) {
+                        playScream();
                         System.out.println("Wumpus in " + (row) + "," + (column+1));
                         Location location = new Location(row, column+1);
                         cave.setTile(location, 404);
-                        String musicFile = "D:/6th Semester/JavaFx Projects/WumpusWorld/src/images/coffin.mp3";
-                        Media sound = new Media(new File(musicFile).toURI().toString());
-                        MediaPlayer mediaPlayer = new MediaPlayer(sound);
-                        mediaPlayer.play();
+                        score = score - 10;
+                        System.out.println("Score " + score);
+                        playScream();
                         isWumpusDead = true;
                     }
                 }
@@ -617,13 +647,13 @@ public class App extends Application{
                 if(isStench[row+1][column+1] == 1 || isStench[row+1][column-1] == 1 || isStench[row+2][column] == 1){
                    
                     if(isVisited[row+1][column] == 0) {
+                        playScream();
                         System.out.println("Wumpus in " + (row+1) + "," + column);
                         Location location = new Location(row+1, column);
                         cave.setTile(location, 404);
-                        String musicFile = "D:/6th Semester/JavaFx Projects/WumpusWorld/src/images/coffin.mp3";
-                        Media sound = new Media(new File(musicFile).toURI().toString());
-                        MediaPlayer mediaPlayer = new MediaPlayer(sound);
-                        mediaPlayer.play();
+                        score = score - 10;
+                        System.out.println("Score " + score);
+                        playScream();
                         isWumpusDead = true;
                     }
                 }
@@ -633,13 +663,13 @@ public class App extends Application{
                 if(isStench[row-1][column-1] == 1 || isStench[row-1][column+1] == 1 || isStench[row-2][column] == 1){
                     
                     if(isVisited[row-1][column] == 0) {
+                        playScream();
                         System.out.println("Wumpus in " + (row-1) + "," + column);
                         Location location = new Location(row-1, column);
                         cave.setTile(location, 404);
-                        String musicFile = "D:/6th Semester/JavaFx Projects/WumpusWorld/src/images/coffin.mp3";
-                        Media sound = new Media(new File(musicFile).toURI().toString());
-                        MediaPlayer mediaPlayer = new MediaPlayer(sound);
-                        mediaPlayer.play();
+                        score = score - 10;
+                        System.out.println("Score " + score);
+                        playScream();
                         isWumpusDead = true;
                     }
                 }
@@ -651,6 +681,14 @@ public class App extends Application{
 
         
         
+    }
+
+    public void playScream(){
+        String musicFile = "D:/6th Semester/JavaFx Projects/WumpusWorld/src/images/coffin.mp3";
+        Media sound = new Media(new File(musicFile).toURI().toString());
+        MediaPlayer mediaPlayer = new MediaPlayer(sound);
+        mediaPlayer.play();
+
     }
 
     public void isPitPresent(int row, int column, Location previous, Location current){
@@ -782,79 +820,34 @@ public class App extends Application{
         
     }
 
-    public void checkPit(int pRow, int pCol, int cRow, int cCol){
-        if(pRow > cRow && cRow >= pCol && cCol < pCol){
-            knowledgeBoard[cRow][pCol].tileID = 1;
-            System.out.println("Pit in "+cRow + "," + pCol);
-
-        }
-        else if(pRow > cRow && cRow >= pCol && cCol > pCol){
-            knowledgeBoard[cRow][pCol].tileID = 1;
-            System.out.println("Pit in "+cRow + "," + pCol);
-
-        }
-        else if(pRow < cRow && cRow >= pCol && cCol > pCol){
-            knowledgeBoard[cRow][pCol].tileID = 1;
-            System.out.println("Pit in "+cRow + "," + pCol);
-            
-        }
-        else if(pRow < cRow && cRow >= pCol && cCol < pCol){
-            knowledgeBoard[cRow][pCol].tileID = 1;
-            System.out.println("Pit in "+cRow + "," + pCol);
-            
-        }
-        else if(pRow > cRow && cRow < pCol && cCol < pCol){
-            knowledgeBoard[pRow][cCol].tileID = 1;
-            System.out.println("Pit in "+pRow + "," + cCol);
-            
-        }
-        else if(pRow < cRow && cRow < pCol && cCol < pCol){
-            knowledgeBoard[pRow][cCol].tileID = 1;
-            System.out.println("Pit in "+pRow + "," + cCol);
-            
-        }
-        else if(pRow < cRow && cRow < pCol && cCol > pCol){
-            knowledgeBoard[pRow][cCol].tileID = 1;
-            System.out.println("Pit in "+pRow + "," + cCol);
-            
-        }
-        else if(pRow > cRow && cRow < pCol && cCol > pCol){
-            knowledgeBoard[pRow][cCol].tileID = 1;
-            System.out.println("Pit in "+pRow + "," + cCol);
-            
-        }
-    }
-
     
-
-
 
     public void checkTile(int hint){
 
         if(hint  == 0){
             //System.out.println("OK");
-            score = score - 1000;
+            
         }
         else if(hint  == 1){
             System.out.println("PIT, Game Over");
-            isAgentDead = true;
             score = score - 1000;
+            isAgentDead = true;
+            
         }
         else if(hint  == 2){
             System.out.println("Wumpus, Game Over");
             // AudioClip scream = new AudioClip(this.getClass().getResource("scream.wav").toString());
             // scream.play();
-            String musicFile = "D:/6th Semester/JavaFx Projects/WumpusWorld/src/images/scream.wav";     // For example
-
-            Media sound = new Media(new File(musicFile).toURI().toString());
-            MediaPlayer mediaPlayer = new MediaPlayer(sound);
-            mediaPlayer.play();
-            isAgentDead = true;
             score = score - 1000;
+            isAgentDead = true;
+            //score = score - 1000;
         }
         else if(hint  == 3){
             System.out.println("Gold found");
+            score = score + 1000;
+            System.out.println("Score " + score);
             goldFound = true;
+
         }
         else if(hint  == 10){
             //System.out.println("Breeze");
@@ -872,6 +865,7 @@ public class App extends Application{
         for(int i=0;i <input.size(); i++){
             if(input.get(i).equals("RIGHT")){
                 player.moveRight();
+                score = score - 1;
                 isVisited[player.getPlayerLocation().getRow()][player.getPlayerLocation().getCol()] = 1;
                 player.checkStatus();
                 input.remove(i);
@@ -879,6 +873,7 @@ public class App extends Application{
             }
             else if(input.get(i).equals("LEFT")){
                 player.moveLeft();
+                score = score - 1;
                 isVisited[player.getPlayerLocation().getRow()][player.getPlayerLocation().getCol()] = 1;
                 player.checkStatus();
                 input.remove(i);
@@ -886,6 +881,7 @@ public class App extends Application{
             }
             else if(input.get(i).equals("UP")){
                 player.moveUp();
+                score = score - 1;
                 isVisited[player.getPlayerLocation().getRow()][player.getPlayerLocation().getCol()] = 1;
                 player.checkStatus();
                 input.remove(i);
@@ -893,6 +889,7 @@ public class App extends Application{
             }
             else if(input.get(i).equals("DOWN")){
                 player.moveDown();
+                score = score - 1;
                 isVisited[player.getPlayerLocation().getRow()][player.getPlayerLocation().getCol()] = 1;
                 player.checkStatus();
                 input.remove(i);
@@ -933,65 +930,65 @@ public class App extends Application{
 
     }
 
-    public void checkBreeze(int r, int c){
-        if(cave.getTileStatus(r, c) == 10){
-            if(r == 0 && c==0){
-                knowledgeBoard[r+1][c].tileID = 1;
-                knowledgeBoard[r][c+1].tileID = 1;
+    // public void checkBreeze(int r, int c){
+    //     if(cave.getTileStatus(r, c) == 10){
+    //         if(r == 0 && c==0){
+    //             knowledgeBoard[r+1][c].tileID = 1;
+    //             knowledgeBoard[r][c+1].tileID = 1;
 
-            }
-            else if(r == 0 && c==9){
-                knowledgeBoard[r+1][c].tileID = 1;
-                knowledgeBoard[r][c-1].tileID = 1;
+    //         }
+    //         else if(r == 0 && c==9){
+    //             knowledgeBoard[r+1][c].tileID = 1;
+    //             knowledgeBoard[r][c-1].tileID = 1;
 
-            }
-            else if(r == 9 && c==0){
-                knowledgeBoard[r][c+1].tileID = 1;
-                knowledgeBoard[r-1][c].tileID = 1;
+    //         }
+    //         else if(r == 9 && c==0){
+    //             knowledgeBoard[r][c+1].tileID = 1;
+    //             knowledgeBoard[r-1][c].tileID = 1;
 
-            }
-            else if(r == 9 && c==9){
-                knowledgeBoard[r][c-1].tileID = 1;
-                knowledgeBoard[r-1][c].tileID = 1;
+    //         }
+    //         else if(r == 9 && c==9){
+    //             knowledgeBoard[r][c-1].tileID = 1;
+    //             knowledgeBoard[r-1][c].tileID = 1;
 
-            }
-            else if(r == 0){
+    //         }
+    //         else if(r == 0){
                 
-                knowledgeBoard[r][c+1].tileID = 1;
-                knowledgeBoard[r][c-1].tileID = 1;
-                knowledgeBoard[r+1][c].tileID = 1;
+    //             knowledgeBoard[r][c+1].tileID = 1;
+    //             knowledgeBoard[r][c-1].tileID = 1;
+    //             knowledgeBoard[r+1][c].tileID = 1;
 
-            }
-            else if(r == 9){
-                knowledgeBoard[r][c+1].tileID = 1;
-                knowledgeBoard[r][c-1].tileID = 1;
-                knowledgeBoard[r-1][c].tileID = 1;
+    //         }
+    //         else if(r == 9){
+    //             knowledgeBoard[r][c+1].tileID = 1;
+    //             knowledgeBoard[r][c-1].tileID = 1;
+    //             knowledgeBoard[r-1][c].tileID = 1;
 
-            }
-            else if(c==0){
-                knowledgeBoard[r-1][c].tileID = 1;
-                knowledgeBoard[r][c+1].tileID = 1;
-                knowledgeBoard[r+1][c].tileID = 1;
+    //         }
+    //         else if(c==0){
+    //             knowledgeBoard[r-1][c].tileID = 1;
+    //             knowledgeBoard[r][c+1].tileID = 1;
+    //             knowledgeBoard[r+1][c].tileID = 1;
 
-            }
-            else if(c==9){
-                knowledgeBoard[r-1][c].tileID = 1;
-                knowledgeBoard[r+1][c].tileID = 1;
-                knowledgeBoard[r][c-1].tileID = 1;
+    //         }
+    //         else if(c==9){
+    //             knowledgeBoard[r-1][c].tileID = 1;
+    //             knowledgeBoard[r+1][c].tileID = 1;
+    //             knowledgeBoard[r][c-1].tileID = 1;
 
-            }
+    //         }
 
-            else {
-                knowledgeBoard[r-1][c].tileID = 1;
-                knowledgeBoard[r+1][c].tileID = 1;
-                knowledgeBoard[r][c-1].tileID = 1;
-                knowledgeBoard[r][c+1].tileID = 1;
+    //         else {
+    //             knowledgeBoard[r-1][c].tileID = 1;
+    //             knowledgeBoard[r+1][c].tileID = 1;
+    //             knowledgeBoard[r][c-1].tileID = 1;
+    //             knowledgeBoard[r][c+1].tileID = 1;
 
-            }
+    //         }
 
 
-        }
-    }
+    //     }
+    // }
 
     public Location convertClickToLocation(int x, int y){
         int row = (y-Cave.xOffset)/50;

@@ -76,6 +76,7 @@ public class Player {
         if(cave.isValid(locationP)){
             location.setRow(locationP.getRow());
             location.setCol(locationP.getCol());
+            //System.out.println("moved in : " + location.getRow() + "," + location.getCol());
 
         }
         

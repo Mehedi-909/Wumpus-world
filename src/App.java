@@ -3,7 +3,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.util.ArrayList;
 import java.util.Random;
-import java.lang.Thread;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -40,6 +39,7 @@ public class App extends Application{
     public boolean isAgentDead = false;
     int rPrev = 9, cPrev = 0, n = 10;
     int[][] isVisited = new int[10][10];
+    int[][] isBreeze = new int[10][10];
     Board [][] knowledgeBoard = new Board[10][10];
     Location cLocation;
     Location pLocation;
@@ -48,6 +48,12 @@ public class App extends Application{
 
     @Override
     public void start(Stage stage) throws Exception {
+
+        for(int i=0; i<10; i++){
+            for(int j=0; j<10; j++){
+                isBreeze[i][j] = 0;
+            }
+        }
         
         stage.setTitle("Wumpus world");
         FileInputStream inputStream = new FileInputStream(path + "boy4.png");
@@ -78,12 +84,7 @@ public class App extends Application{
                 }
                 
                 //System.out.println("Button pressed");
-                try {
-                    AImove2();
-                } catch (InterruptedException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                }
+                AImove2();
             }
 
         });
@@ -182,13 +183,18 @@ public class App extends Application{
         
     }
 
+    public void updateChaining(){
 
-    public void AImove2() throws InterruptedException{
+    }
+
+    public void AImove2(){
+
+        
 
 
         Timer timer = new Timer();
                 int begin = 0;
-                int timeInterval = 500;
+                int timeInterval = 50;
                 timer.schedule(new TimerTask() {
                     int counter = 0;
                     @Override
@@ -203,12 +209,6 @@ public class App extends Application{
                         }
                     }
                 }, begin, timeInterval);
-
-        // while(goldFound == false){
-        //     Thread.sleep(1000);
-        //     controlTimer();
-            
-        // }
             
 
             
@@ -224,292 +224,89 @@ public class App extends Application{
 
             int hint = player.checkStatus();
             if(hint  == 0){
-                System.out.println("OK");
+                //System.out.println("OK");
                 Random random = new Random();
                 int low = 1;
                 int high = 5;
                 int result = random.nextInt(high-low) + low;
 
-                if(cave.isValid(new Location(pRow,pCol+1)) && isVisited[pRow][pCol+1] == 1 && cave.isValid(new Location(pRow,pCol-1)) && isVisited[pRow][pCol-1] == 1 && cave.isValid(new Location(pRow-1,pCol)) && isVisited[pRow-1][pCol] == 1 && cave.isValid(new Location(pRow+1,pCol)) && isVisited[pRow+1][pCol] == 1){
-                    Random random2 = new Random();
-                    int low2 = 1;
-                    int high2 = 5;
-                    int result2 = random2.nextInt(high2-low2) + low2;
-                    if(result2 == 1){
-                        player.moveRight();
-                    }
-                    else if(result2 == 2){
-                        player.moveLeft();
-                    }
-                    else if(result2 == 3){
-                        player.moveUp();
-                    }
-                    else{
-                        player.moveDown();
-                    }
+                if(result == 1){
                     
-                }
-                else if(pRow == 0 && pCol==0 ){
-                    //player.moveRight();
-                    if(isVisited[pRow+1][pCol] == 1 && isVisited[pRow][pCol+1] == 1){
-                        Random random2 = new Random();
-                        int low2 = 1;
-                        int high2 = 3;
-                        int result2 = random2.nextInt(high2-low2) + low2;
-                        if(result2 == 1){
-                            player.moveRight();
-                        }
-                        else{
-                            player.moveDown();
-                            
-                        }
-                    }
-
-                    else {
-
-                        moveRandom(result);
-                    }
-
-
+                    pRow = player.getPlayerLocation().getRow();
+                    pCol = player.getPlayerLocation().getCol();
+                    // if(cave.isValid(new Location(pRow,pCol+1))){
+                    //     if(isVisited[pRow][pCol+1] == 0){
+                    //         player.moveRight();
+                    //         isVisited[pRow][pCol+1] = 1;
     
-                }
-                else if(pRow == 0 && pCol==9 ){
-
-                    //player.moveDown();
-
-                    if(isVisited[pRow+1][pCol] == 1 && isVisited[pRow][pCol-1] == 1){
-                        Random random2 = new Random();
-                        int low2 = 1;
-                        int high2 = 3;
-                        int result2 = random2.nextInt(high2-low2) + low2;
-                        if(result2 == 1){
-                            player.moveLeft();
-                        }
-                        else{
-                            player.moveDown();
-                        }
-
-                    }
-                    else {
-                        moveRandom(result);
-                    }
-
-
-    
-                }
-                else if(pRow == 9 && pCol==0){
-                    //player.moveRight();
-                    if(isVisited[pRow][pCol+1] == 1 && isVisited[pRow-1][pCol] == 1){
-                        Random random2 = new Random();
-                        int low2 = 1;
-                        int high2 = 3;
-                        int result2 = random2.nextInt(high2-low2) + low2;
-                        if(result2 == 1){
-                            player.moveRight();
-                        }
-                        else{
-                            player.moveUp();
-                        }                       
-
-                    }
-                    else {
-                        moveRandom(result);
-                    }
-
-    
-                }
-                else if(pRow == 9 && pCol==9){
-                    //player.moveLeft();
-                    if(isVisited[pRow][pCol-1] == 1 && isVisited[pRow-1][pCol] == 1){
-                        Random random2 = new Random();
-                        int low2 = 1;
-                        int high2 = 3;
-                        int result2 = random2.nextInt(high2-low2) + low2;
-                        if(result2 == 1){
-                            player.moveUp();
-                        }
-                        else{
-                            player.moveLeft();
-                        }
-                               
-
-                    }
-                    else {
-                        moveRandom(result);
-                    }
-
-                }
-                else if(pRow == 0 ){
+                    //     }
+                    // }
                     
-                    
-                    //player.moveDown();
-                    if(isVisited[pRow][pCol+1] == 1 &&isVisited[pRow][pCol-1] == 1 && isVisited[pRow+1][pCol] == 1){
-                        Random random2 = new Random();
-                        int low2 = 1;
-                        int high2 = 3;
-                        int result2 = random2.nextInt(high2-low2) + low2;
-                        if(result2 == 1){
-                            player.moveDown();
-                        }
-                        else{
-                            player.moveLeft();
-                        }                        
-
-                    }
-                    else {
-                        moveRandom(result);
-                    }
-
-    
-                }
-                else if(pRow == 9 ){
-                    //player.moveUp();
-                    if(isVisited[pRow][pCol+1] == 1 &&isVisited[pRow][pCol-1] == 1 && isVisited[pRow-1][pCol] == 1){
-                        Random random2 = new Random();
-                        int low2 = 1;
-                        int high2 = 3;
-                        int result2 = random2.nextInt(high2-low2) + low2;
-                        if(result2 == 1){
-                            player.moveRight();
-                        }
-                        else{
-                            player.moveUp();
-                        }                        
-
-                    }
-                    else {
-                        moveRandom(result);
-                    }
- 
-    
-                }
-                else if(pCol==0){
                     player.moveRight();
-                    if(isVisited[pRow-1][pCol] == 1 &&isVisited[pRow][pCol+1] == 1 && isVisited[pRow+1][pCol] == 1){
-                        Random random2 = new Random();
-                        int low2 = 1;
-                        int high2 = 3;
-                        int result2 = random2.nextInt(high2-low2) + low2;
-                        if(result2 == 1){
-                            player.moveRight();
-                        }
-                        else{
-                            player.moveUp();
-                        }  
-
-                    }
-                    else {
-                        moveRandom(result);
-                    }
-    
-                }
-                else if(pCol==9 ){
-                    //player.moveLeft();
-                    if(isVisited[pRow-1][pCol] == 1 &&isVisited[pRow+1][pCol] == 1 && isVisited[pRow][pCol-1] == 1){
-                        Random random2 = new Random();
-                        int low2 = 1;
-                        int high2 = 3;
-                        int result2 = random2.nextInt(high2-low2) + low2;
-                        if(result2 == 1){
-                            player.moveUp();
-                        }
-                        else{
-                            player.moveLeft();
-                        }
-
-                    }
-                    else {
-                        moveRandom(result);
-                    }
-                    
-    
-                }
-
-                else {
-                    moveRandom(result);
-                }
-    
-                // else {
-                //     knowledgeBoard[r-1][c].tileID = 1;
-                //     knowledgeBoard[r+1][c].tileID = 1;
-                //     knowledgeBoard[r][c-1].tileID = 1;
-                //     knowledgeBoard[r][c+1].tileID = 1;
-    
-                // }
-
-                // else if(result == 1){
-                    
-                //     pRow = player.getPlayerLocation().getRow();
-                //     pCol = player.getPlayerLocation().getCol();
-                //     if(cave.isValid(new Location(pRow,pCol+1))){
-                //         if(isVisited[pRow][pCol+1] == 0){
-                //             player.moveRight();
-                //             isVisited[pRow][pCol+1] = 1;
-    
-                //         }
-                //     }
-                    
-                //     //player.moveRight();
-                //     cRow = player.getPlayerLocation().getRow();
-                //     cCol = player.getPlayerLocation().getCol();
+                    isVisited[player.getPlayerLocation().getRow()][player.getPlayerLocation().getCol()] = 1;
+                    cRow = player.getPlayerLocation().getRow();
+                    cCol = player.getPlayerLocation().getCol();
                      
-                //     checkTile(player.checkStatus());
-                //     // if(player.checkStatus() == 3){
-                //     //     goldFound = true;
-                // //     System.out.println("Gold found");
+                    checkTile(player.checkStatus());
+                    // if(player.checkStatus() == 3){
+                    //     goldFound = true;
+                //     System.out.println("Gold found");
 
-                //     // }
-                // }
-                // else if(result == 2){
-                //     pRow = player.getPlayerLocation().getRow();
-                //     pCol = player.getPlayerLocation().getCol();
-                //     if(cave.isValid(new Location(pRow,pCol-1))){
-                //         if(isVisited[pRow][pCol-1] == 0){
-                //             player.moveLeft();
-                //             isVisited[pRow][pCol-1] = 1;
+                    // }
+                }
+                else if(result == 2){
+                    pRow = player.getPlayerLocation().getRow();
+                    pCol = player.getPlayerLocation().getCol();
+                    // if(cave.isValid(new Location(pRow,pCol-1))){
+                    //     if(isVisited[pRow][pCol-1] == 0){
+                    //         player.moveLeft();
+                    //         isVisited[pRow][pCol-1] = 1;
                             
-                //         }
-                //     }
+                    //     }
+                    // }
                     
-                //     //player.moveLeft();
-                //     cRow = player.getPlayerLocation().getRow();
-                //     cCol = player.getPlayerLocation().getCol();
+                    player.moveLeft();
+                    isVisited[player.getPlayerLocation().getRow()][player.getPlayerLocation().getCol()] = 1;
+                    cRow = player.getPlayerLocation().getRow();
+                    cCol = player.getPlayerLocation().getCol();
                     
-                //     checkTile(player.checkStatus());
+                    checkTile(player.checkStatus());
         
-                // }
-                // else if(result == 3){
-                //     pRow = player.getPlayerLocation().getRow();
-                //     pCol = player.getPlayerLocation().getCol();
-                //     if(cave.isValid(new Location(pRow-1,pCol))){
-                //         if(isVisited[pRow-1][pCol] == 0){
-                //             player.moveUp();
-                //             isVisited[pRow-1][pCol] = 1;
-                //         }
-                //     }
+                }
+                else if(result == 3){
+                    pRow = player.getPlayerLocation().getRow();
+                    pCol = player.getPlayerLocation().getCol();
+                    // if(cave.isValid(new Location(pRow-1,pCol))){
+                    //     if(isVisited[pRow-1][pCol] == 0){
+                    //         player.moveUp();
+                    //         isVisited[pRow-1][pCol] = 1;
+                    //     }
+                    // }
                     
-                //     //player.moveUp();
-                //     cRow = player.getPlayerLocation().getRow();
-                //     cCol = player.getPlayerLocation().getCol();
+                    player.moveUp();
+                    isVisited[player.getPlayerLocation().getRow()][player.getPlayerLocation().getCol()] = 1;
+                    cRow = player.getPlayerLocation().getRow();
+                    cCol = player.getPlayerLocation().getCol();
                     
-                //     checkTile(player.checkStatus());
-                // }
-                // else{
-                //     pRow = player.getPlayerLocation().getRow();
-                //     pCol = player.getPlayerLocation().getCol();
-                //     if(cave.isValid(new Location(pRow+1,pCol))){
-                //         if(isVisited[pRow+1][pCol] == 0){
-                //             player.moveDown();
-                //             isVisited[pRow+1][pCol] = 1;
-                //         }
-                //     }
+                    checkTile(player.checkStatus());
+                }
+                else{
+                    pRow = player.getPlayerLocation().getRow();
+                    pCol = player.getPlayerLocation().getCol();
+                    // if(cave.isValid(new Location(pRow+1,pCol))){
+                    //     if(isVisited[pRow+1][pCol] == 0){
+                    //         player.moveDown();
+                    //         isVisited[pRow+1][pCol] = 1;
+                    //     }
+                    // }
                     
-                //     //player.moveDown();
-                //     cRow = player.getPlayerLocation().getRow();
-                //     cCol = player.getPlayerLocation().getCol();
+                    player.moveDown();
+                    isVisited[player.getPlayerLocation().getRow()][player.getPlayerLocation().getCol()] = 1;
+                    cRow = player.getPlayerLocation().getRow();
+                    cCol = player.getPlayerLocation().getCol();
                     
-                //     checkTile(player.checkStatus());
-                // }
+                    checkTile(player.checkStatus());
+                }
                 
                 score = score - 1000;
             }
@@ -534,47 +331,140 @@ public class App extends Application{
             }
             else if(hint  == 3){
                 System.out.println("Gold found");
+                isVisited[player.getPlayerLocation().getRow()][player.getPlayerLocation().getCol()] = 1;
                 goldFound = true;
             }
             else if(hint  == 10){
-                System.out.println("Breeze");
+                isBreeze[player.getPlayerLocation().getRow()][player.getPlayerLocation().getCol()] = 1;
+                //System.out.println("Breeze");
+                Location previous = new Location(pRow, pCol);
+                Location current = new Location(player.getPlayerLocation().getRow(), player.getPlayerLocation().getCol());
+
+                isPitPresent(player.getPlayerLocation().getRow(), player.getPlayerLocation().getCol(),previous,current);
                 //cRow = player.getPlayerLocation().getRow();
-                //cCol = player.getPlayerLocation().getCol(); 
+                //cCol = player.getPlayerLocation().getCol();
+                int rowTemp = player.getPlayerLocation().getRow();
+                int colTemp = player.getPlayerLocation().getCol(); 
+                //System.out.println("Current : " + rowTemp + "," + colTemp);
+                //System.out.println("Previous : " + pRow + "," + pCol);
                 
                 player.move(new Location(pRow, pCol));
+                isVisited[player.getPlayerLocation().getRow()][player.getPlayerLocation().getCol()] = 1;
+                int rowTemp2 = player.getPlayerLocation().getRow();
+                int colTemp2 = player.getPlayerLocation().getCol();
+
+                // if(rowTemp < rowTemp2){
+                //     if(cave.isValid(new Location(rowTemp, colTemp+1))){
+                //         pRow = player.getPlayerLocation().getRow();
+                //         pCol = player.getPlayerLocation().getCol();
+                //         player.moveRight();
+
+                //         cRow = player.getPlayerLocation().getRow();
+                //         cCol = player.getPlayerLocation().getCol();
+                        
+                //         checkTile(player.checkStatus());
+
+                //     }
+                //     else if(cave.isValid(new Location(rowTemp, colTemp-1))){
+                //         pRow = player.getPlayerLocation().getRow();
+                //         pCol = player.getPlayerLocation().getCol();
+                //         player.moveLeft();
+
+                //         cRow = player.getPlayerLocation().getRow();
+                //         cCol = player.getPlayerLocation().getCol();
+                        
+                //         checkTile(player.checkStatus());
+
+                //     }
+                // }
+                // else if(rowTemp > rowTemp2){
+                //     if(cave.isValid(new Location(rowTemp, colTemp+1))){
+                //         pRow = player.getPlayerLocation().getRow();
+                //         pCol = player.getPlayerLocation().getCol();
+                //         player.moveRight();
+
+                //         cRow = player.getPlayerLocation().getRow();
+                //         cCol = player.getPlayerLocation().getCol();
+                        
+                //         checkTile(player.checkStatus());
+
+                //     }
+                //     else if(cave.isValid(new Location(rowTemp, colTemp-1))){
+
+                //         pRow = player.getPlayerLocation().getRow();
+                //         pCol = player.getPlayerLocation().getCol();
+                //         player.moveLeft();
+
+                //         cRow = player.getPlayerLocation().getRow();
+                //         cCol = player.getPlayerLocation().getCol();
+                        
+                //         checkTile(player.checkStatus());
+
+                //     }
+
+                // }
+                // else if(colTemp < colTemp2){
+                //     if(cave.isValid(new Location(rowTemp-1, colTemp))){
+                //         pRow = player.getPlayerLocation().getRow();
+                //         pCol = player.getPlayerLocation().getCol();
+                //         player.moveUp();
+
+                //         cRow = player.getPlayerLocation().getRow();
+                //         cCol = player.getPlayerLocation().getCol();
+                        
+                //         checkTile(player.checkStatus());
+
+                //     }
+                //     else if(cave.isValid(new Location(rowTemp+1, colTemp))){
+                //         pRow = player.getPlayerLocation().getRow();
+                //         pCol = player.getPlayerLocation().getCol();
+                //         player.moveDown();
+
+                //         cRow = player.getPlayerLocation().getRow();
+                //         cCol = player.getPlayerLocation().getCol();
+                        
+                //         checkTile(player.checkStatus());
+
+                //     }
+
+                // }
+                // else if(colTemp > colTemp2){
+                //     if(cave.isValid(new Location(rowTemp-1, colTemp))){
+                //         pRow = player.getPlayerLocation().getRow();
+                //         pCol = player.getPlayerLocation().getCol();
+                //         player.moveUp();
+
+                //         cRow = player.getPlayerLocation().getRow();
+                //         cCol = player.getPlayerLocation().getCol();
+                        
+                //         checkTile(player.checkStatus());
+
+                //     }
+                //     else if(cave.isValid(new Location(rowTemp+1, colTemp))){
+                //         pRow = player.getPlayerLocation().getRow();
+                //         pCol = player.getPlayerLocation().getCol();
+                //         player.moveDown();
+
+                //         cRow = player.getPlayerLocation().getRow();
+                //         cCol = player.getPlayerLocation().getCol();
+                        
+                //         checkTile(player.checkStatus());
+
+                //     }
+
+                // }
+                int rowTemp3 = player.getPlayerLocation().getRow();
+                int colTemp3 = player.getPlayerLocation().getCol();
+
+                pRow = rowTemp;
+                pCol = colTemp;
+                cRow = rowTemp3;
+                cCol = colTemp3;
+                //checkPit(pRow, pCol, cRow, cCol);
+                
+
                 //upper right
-                if(pRow > cRow && cRow >= pCol && cCol < pCol){
-                    knowledgeBoard[cRow][pCol].tileID = 1;
-
-                }
-                else if(pRow > cRow && cRow >= pCol && cCol > pCol){
-                    knowledgeBoard[cRow][pCol].tileID = 1;
-
-                }
-                else if(pRow < cRow && cRow >= pCol && cCol > pCol){
-                    knowledgeBoard[cRow][pCol].tileID = 1;
-                    
-                }
-                else if(pRow < cRow && cRow >= pCol && cCol < pCol){
-                    knowledgeBoard[cRow][pCol].tileID = 1;
-                    
-                }
-                else if(pRow > cRow && cRow < pCol && cCol < pCol){
-                    knowledgeBoard[pRow][cCol].tileID = 1;
-                    
-                }
-                else if(pRow < cRow && cRow < pCol && cCol < pCol){
-                    knowledgeBoard[pRow][cCol].tileID = 1;
-                    
-                }
-                else if(pRow < cRow && cRow < pCol && cCol > pCol){
-                    knowledgeBoard[pRow][cCol].tileID = 1;
-                    
-                }
-                else if(pRow > cRow && cRow < pCol && cCol > pCol){
-                    knowledgeBoard[pRow][cCol].tileID = 1;
-                    
-                }
+                
                 // else {
                 //     if(cave.isValid(new Location(pRow, cCol))){
 
@@ -597,39 +487,47 @@ public class App extends Application{
                 cCol = player.getPlayerLocation().getCol(); 
                 
                 player.move(new Location(pRow, pCol));
+                isVisited[player.getPlayerLocation().getRow()][player.getPlayerLocation().getCol()] = 1;
                 //upper right
                 if(pRow > cRow && cRow >= pCol && cCol < pCol){
                     knowledgeBoard[cRow][pCol].tileID = 2;
+                    System.out.println("Wumpus in "+cRow + "," + pCol);
 
                 }
                 else if(pRow > cRow && cRow >= pCol && cCol > pCol){
                     knowledgeBoard[cRow][pCol].tileID = 2;
+                    System.out.println("Wumpus in "+cRow + "," + pCol);
 
                 }
-                
                 else if(pRow < cRow && cRow >= pCol && cCol > pCol){
                     knowledgeBoard[cRow][pCol].tileID = 2;
+                    System.out.println("Wumpus in "+cRow + "," + pCol);
                     
                 }
                 else if(pRow < cRow && cRow >= pCol && cCol < pCol){
                     knowledgeBoard[cRow][pCol].tileID = 2;
+                    System.out.println("Wumpus in "+cRow + "," + pCol);
                     
                 }
 
                 else if(pRow > cRow && cRow < pCol && cCol < pCol){
                     knowledgeBoard[pRow][cCol].tileID = 2;
+                    System.out.println("Wumpus in "+pRow + "," + cCol);
                     
                 }
                 else if(pRow < cRow && cRow < pCol && cCol < pCol){
                     knowledgeBoard[pRow][cCol].tileID = 2;
+                    System.out.println("Wumpus in "+pRow + "," + cCol);
                     
                 }
                 else if(pRow < cRow && cRow < pCol && cCol > pCol){
                     knowledgeBoard[pRow][cCol].tileID = 2;
+                    System.out.println("Wumpus in "+pRow + "," + cCol);
                     
                 }
                 else if(pRow > cRow && cRow < pCol && cCol > pCol){
                     knowledgeBoard[pRow][cCol].tileID = 2;
+                    System.out.println("Wumpus in "+pRow + "," + cCol);
                     
                 }
                 // else {
@@ -648,172 +546,176 @@ public class App extends Application{
 
     }
 
-    public void moveRandom(int result){
+    public void isPitPresent(int row, int column, Location previous, Location current){
 
-        if(result == 1){
+        if(previous.getRow() > current.getRow()){
+            //from down to up
+            if(cave.isValid(new Location(row-1,column-1)) && cave.isValid(new Location(row-1,column+1)) &&  cave.isValid(new Location(row-2, column))){
+                if(isBreeze[row-1][column-1] == 1 || isBreeze[row-1][column+1] == 1 || isBreeze[row-2][column] == 1){
                     
-            pRow = player.getPlayerLocation().getRow();
-            pCol = player.getPlayerLocation().getCol();
-            if(cave.isValid(new Location(pRow,pCol+1))){
-                if(isVisited[pRow][pCol+1] == 0){
-                    player.moveRight();
-                    isVisited[pRow][pCol+1] = 1;
-
+                    System.out.println("Pit in " + (row-1) + "," + column);
                 }
+                
             }
-            else if(cave.isValid(new Location(pRow,pCol-1))){
-                if(isVisited[pRow][pCol-1] == 0){
-                    player.moveLeft();
-                    isVisited[pRow][pCol-1] = 1;
-
+            else if(cave.isValid(new Location(row-1,column+1)) && cave.isValid(new Location(row+1,column+1)) && cave.isValid(new Location(row,column+2))){
+                if(isBreeze[row-1][column+1] == 1 || isBreeze[row+1][column+1] == 1 || isBreeze[row][column+2] == 1){
+                    System.out.println("Pit in " + row + "," + (column+1));
                 }
+
             }
-            else if(cave.isValid(new Location(pRow-1,pCol))){
-                if(isVisited[pRow-1][pCol] == 0){
-                    player.moveUp();
-                    isVisited[pRow-1][pCol] = 1;
-
+            else if(cave.isValid(new Location(row-1,column-1)) && cave.isValid(new Location(row+1,column-1)) && cave.isValid(new Location(row,column-2))){
+                if(isBreeze[row-1][column-1] == 1 || isBreeze[row+1][column-1] == 1 || isBreeze[row][column-2] == 1){
+                    System.out.println("Pit in " + row + "," + (column-1));
                 }
-            }
-            else if(cave.isValid(new Location(pRow+1,pCol))){
-                if(isVisited[pRow+1][pCol] == 0){
-                    player.moveDown();
-                    isVisited[pRow+1][pCol] = 1;
 
-                }
             }
             
-            //player.moveRight();
-            cRow = player.getPlayerLocation().getRow();
-            cCol = player.getPlayerLocation().getCol();
-             
-            checkTile(player.checkStatus());
-            // if(player.checkStatus() == 3){
-            //     goldFound = true;
-        //     System.out.println("Gold found");
-
-            // }
-        }
-
-        else if(result == 2){
-            pRow = player.getPlayerLocation().getRow();
-            pCol = player.getPlayerLocation().getCol();
-            if(cave.isValid(new Location(pRow,pCol-1))){
-                if(isVisited[pRow][pCol-1] == 0){
-                    player.moveLeft();
-                    isVisited[pRow][pCol-1] = 1;
-
-                }
-            }
-            else if(cave.isValid(new Location(pRow,pCol+1))){
-                if(isVisited[pRow][pCol+1] == 0){
-                    player.moveRight();
-                    isVisited[pRow][pCol+1] = 1;
-
-                }
-            }
             
-            else if(cave.isValid(new Location(pRow-1,pCol))){
-                if(isVisited[pRow-1][pCol] == 0){
-                    player.moveUp();
-                    isVisited[pRow-1][pCol] = 1;
-
-                }
-            }
-            else if(cave.isValid(new Location(pRow+1,pCol))){
-                if(isVisited[pRow+1][pCol] == 0){
-                    player.moveDown();
-                    isVisited[pRow+1][pCol] = 1;
-
-                }
-            }
-            
-            //player.moveRight();
-            cRow = player.getPlayerLocation().getRow();
-            cCol = player.getPlayerLocation().getCol();
-             
-            checkTile(player.checkStatus());
 
         }
-        else if(result == 3){
-            pRow = player.getPlayerLocation().getRow();
-            pCol = player.getPlayerLocation().getCol();
-            if(cave.isValid(new Location(pRow-1,pCol))){
-                if(isVisited[pRow-1][pCol] == 0){
-                    player.moveUp();
-                    isVisited[pRow-1][pCol] = 1;
-
+        else if(previous.getRow() < current.getRow()){
+            //from up to down
+            if(cave.isValid(new Location(row+1,column-1)) && cave.isValid(new Location(row+1,column+1)) && cave.isValid(new Location(row+2,column))){
+                if(isBreeze[row+1][column-1] == 1 || isBreeze[row+1][column+1] == 1 || isBreeze[row+2][column] == 1){
+                    if(isVisited[row+1][column] == 0) {
+                        System.out.println("Pit in " + (row+1) + "," + column);
+                    }
+                    
                 }
-            }
-            else if(cave.isValid(new Location(pRow,pCol+1))){
-                if(isVisited[pRow][pCol+1] == 0){
-                    player.moveRight();
-                    isVisited[pRow][pCol+1] = 1;
-
-                }
-            }
-            else if(cave.isValid(new Location(pRow,pCol-1))){
-                if(isVisited[pRow][pCol-1] == 0){
-                    player.moveLeft();
-                    isVisited[pRow][pCol-1] = 1;
-
-                }
+                
             }
             
-            else if(cave.isValid(new Location(pRow+1,pCol))){
-                if(isVisited[pRow+1][pCol] == 0){
-                    player.moveDown();
-                    isVisited[pRow+1][pCol] = 1;
-
+            else if(cave.isValid(new Location(row-1,column+1)) && cave.isValid(new Location(row+1,column+1)) && cave.isValid(new Location(row,column+2))){
+                if(isBreeze[row-1][column+1] == 1 || isBreeze[row+1][column+1] == 1 || isBreeze[row][column+2] == 1){
+                   
+                    if(isVisited[row][column+1] == 0) {
+                        System.out.println("Pit in " + row + "," + (column+1));
+                    }
                 }
+
+            }
+            else if(cave.isValid(new Location(row-1,column-1)) && cave.isValid(new Location(row+1,column-1)) && cave.isValid(new Location(row,column-2))){
+                if(isBreeze[row-1][column-1] == 1 || isBreeze[row+1][column-1] == 1 || isBreeze[row][column-2] == 1){
+                    
+                    if(isVisited[row][column-1] == 0) {
+                        System.out.println("Pit in " + row + "," + (column-1));
+                    }
+                }
+
             }
             
-            //player.moveRight();
-            cRow = player.getPlayerLocation().getRow();
-            cCol = player.getPlayerLocation().getCol();
-             
-            checkTile(player.checkStatus());
+            
         }
-        else{
-            pRow = player.getPlayerLocation().getRow();
-            pCol = player.getPlayerLocation().getCol();
-            if(cave.isValid(new Location(pRow+1,pCol))){
-                if(isVisited[pRow+1][pCol] == 0){
-                    player.moveDown();
-                    isVisited[pRow+1][pCol] = 1;
+        else if(previous.getCol() > current.getCol()){
+            //right to left
 
+            if(cave.isValid(new Location(row-1,column-1)) && cave.isValid(new Location(row+1,column-1)) && cave.isValid(new Location(row,column-2))){
+                if(isBreeze[row-1][column-1] == 1 || isBreeze[row+1][column-1] == 1 || isBreeze[row][column-2] == 1){
+                    
+                    if(isVisited[row][column-1] == 0) {
+                        System.out.println("Pit in " + row + "," + (column-1));
+                    }
                 }
+                
             }
-            else if(cave.isValid(new Location(pRow,pCol+1))){
-                if(isVisited[pRow][pCol+1] == 0){
-                    player.moveRight();
-                    isVisited[pRow][pCol+1] = 1;
-
+            else if(cave.isValid(new Location(row+1,column+1)) && cave.isValid(new Location(row+1,column-1)) && cave.isValid(new Location(row+2,column))){
+                if(isBreeze[row+1][column+1] == 1 || isBreeze[row+1][column-1] == 1 || isBreeze[row+2][column] == 1){
+                    
+                    if(isVisited[row+1][column] == 0) {
+                        System.out.println("Pit in " + (row+1) + "," + column);
+                    }
                 }
+
             }
-            else if(cave.isValid(new Location(pRow,pCol-1))){
-                if(isVisited[pRow][pCol-1] == 0){
-                    player.moveLeft();
-                    isVisited[pRow][pCol-1] = 1;
-
+            else if(cave.isValid(new Location(row-1,column-1)) && cave.isValid(new Location(row-1,column+1)) && cave.isValid(new Location(row-2,column))){
+                if(isBreeze[row-1][column-1] == 1 || isBreeze[row-1][column+1] == 1 || isBreeze[row-2][column] == 1){
+                    
+                    if(isVisited[row-1][column] == 0) {
+                        System.out.println("Pit in " + (row-1) + "," + column);
+                    }
                 }
+
             }
-            else if(cave.isValid(new Location(pRow-1,pCol))){
-                if(isVisited[pRow-1][pCol] == 0){
-                    player.moveUp();
-                    isVisited[pRow-1][pCol] = 1;
-
+            
+        }
+        else if(previous.getCol() < current.getCol()){
+            //left to right
+            if(cave.isValid(new Location(row-1,column+1)) && cave.isValid(new Location(row+1,column+1)) && cave.isValid(new Location(row,column+2))){
+                if(isBreeze[row-1][column+1] == 1 || isBreeze[row+1][column+1] == 1 || isBreeze[row][column+2] == 1){
+                    
+                    if(isVisited[row][column+1] == 0) {
+                        System.out.println("Pit in " + (row) + "," + (column+1));
+                    }
                 }
+                
+            }
+            else if(cave.isValid(new Location(row+1,column+1)) && cave.isValid(new Location(row+1,column-1)) && cave.isValid(new Location(row+2,column))){
+                if(isBreeze[row+1][column+1] == 1 || isBreeze[row+1][column-1] == 1 || isBreeze[row+2][column] == 1){
+                   
+                    if(isVisited[row+1][column] == 0) {
+                        System.out.println("Pit in " + (row+1) + "," + column);
+                    }
+                }
+
+            }
+            else if(cave.isValid(new Location(row-1,column-1)) && cave.isValid(new Location(row-1,column+1)) && cave.isValid(new Location(row-2,column))){
+                if(isBreeze[row-1][column-1] == 1 || isBreeze[row-1][column+1] == 1 || isBreeze[row-2][column] == 1){
+                    
+                    if(isVisited[row-1][column] == 0) {
+                        System.out.println("Pit in " + (row-1) + "," + column);
+                    }
+                }
+
             }
             
             
-            //player.moveRight();
-            cRow = player.getPlayerLocation().getRow();
-            cCol = player.getPlayerLocation().getCol();
-             
-            checkTile(player.checkStatus());
         }
 
+        
+        
+    }
+
+    public void checkPit(int pRow, int pCol, int cRow, int cCol){
+        if(pRow > cRow && cRow >= pCol && cCol < pCol){
+            knowledgeBoard[cRow][pCol].tileID = 1;
+            System.out.println("Pit in "+cRow + "," + pCol);
+
+        }
+        else if(pRow > cRow && cRow >= pCol && cCol > pCol){
+            knowledgeBoard[cRow][pCol].tileID = 1;
+            System.out.println("Pit in "+cRow + "," + pCol);
+
+        }
+        else if(pRow < cRow && cRow >= pCol && cCol > pCol){
+            knowledgeBoard[cRow][pCol].tileID = 1;
+            System.out.println("Pit in "+cRow + "," + pCol);
+            
+        }
+        else if(pRow < cRow && cRow >= pCol && cCol < pCol){
+            knowledgeBoard[cRow][pCol].tileID = 1;
+            System.out.println("Pit in "+cRow + "," + pCol);
+            
+        }
+        else if(pRow > cRow && cRow < pCol && cCol < pCol){
+            knowledgeBoard[pRow][cCol].tileID = 1;
+            System.out.println("Pit in "+pRow + "," + cCol);
+            
+        }
+        else if(pRow < cRow && cRow < pCol && cCol < pCol){
+            knowledgeBoard[pRow][cCol].tileID = 1;
+            System.out.println("Pit in "+pRow + "," + cCol);
+            
+        }
+        else if(pRow < cRow && cRow < pCol && cCol > pCol){
+            knowledgeBoard[pRow][cCol].tileID = 1;
+            System.out.println("Pit in "+pRow + "," + cCol);
+            
+        }
+        else if(pRow > cRow && cRow < pCol && cCol > pCol){
+            knowledgeBoard[pRow][cCol].tileID = 1;
+            System.out.println("Pit in "+pRow + "," + cCol);
+            
+        }
     }
 
     public void AImove(){
@@ -831,7 +733,7 @@ public class App extends Application{
 
 
             if(r >= 1 && !((r-1) == rPrev && c == cPrev) && (cave.getTileStatus(r-1, c) ==0 || cave.getTileStatus(r-1, c) ==3 ) && isVisited[r-1][c] ==0 ) {
-                System.out.println("1");
+                //System.out.println("1");
    			 rPrev = r;
    			 cPrev = c;
    			 
@@ -841,14 +743,14 @@ public class App extends Application{
                 isVisited[r][c] =1;
                 
                 player.move(newLocation);
-                System.out.println(r + " " + c);
+                //System.out.println(r + " " + c);
                 //player.moveRight();
                 checkTile(player.checkStatus());
                 count++;
    		    }
 
             else if(r <= (n-2) && !((r+1) == rPrev && c == cPrev) && (cave.getTileStatus(r+1, c) ==0 || cave.getTileStatus(r+1, c) ==3 ) && isVisited[r+1][c] ==0) {
-                System.out.println("2");
+                //System.out.println("2");
    			 rPrev = r;
    			 cPrev = c;
    			 
@@ -857,12 +759,12 @@ public class App extends Application{
                 Location newLocation = new Location(r, c);
                 isVisited[r][c] =1;
                 player.move(newLocation);
-                System.out.println(r + " " + c);
+                //System.out.println(r + " " + c);
                 checkTile(player.checkStatus());
                 count++;
    		 }
    		 else if(c >= 1 && !(r == rPrev && (c-1) == cPrev) && (cave.getTileStatus(r, c-1) ==0 || cave.getTileStatus(r, c-1) ==3 ) && isVisited[r][c-1] ==0 ) {
-            System.out.println("3");
+            //System.out.println("3");
    			 rPrev = r;
    			 cPrev = c;
    			 
@@ -871,12 +773,12 @@ public class App extends Application{
                 Location newLocation = new Location(r, c);
                 isVisited[r][c] =1;
                 player.move(newLocation);
-                System.out.println(r + " " + c);
+                //System.out.println(r + " " + c);
                 checkTile(player.checkStatus());
                 count++;
    		 }
    		 else if(c <= (n-2) && !(r == rPrev && (c+1) == cPrev) && (cave.getTileStatus(r, c+1) ==0 || cave.getTileStatus(r, c+1) ==3 )  && isVisited[r][c+1] ==0) {
-            System.out.println("4");
+            //System.out.println("4");
    			 rPrev = r;
    			 cPrev = c;
    			 
@@ -885,13 +787,13 @@ public class App extends Application{
                 Location newLocation = new Location(r, c);
                 isVisited[r][c] =1;
                 player.move(newLocation);
-                System.out.println(r + " " + c);
+                //System.out.println(r + " " + c);
                 checkTile(player.checkStatus());
                 count++;
    		 }
    		 
    		 if(!foundNewPath) {
-            System.out.println("5");
+            //System.out.println("5");
    			 int temp1 = rPrev;
    			 int temp2 = cPrev;
    			 
@@ -947,7 +849,7 @@ public class App extends Application{
     public void checkTile(int hint){
 
         if(hint  == 0){
-            System.out.println("OK");
+            //System.out.println("OK");
             score = score - 1000;
         }
         else if(hint  == 1){
@@ -972,13 +874,13 @@ public class App extends Application{
             goldFound = true;
         }
         else if(hint  == 10){
-            System.out.println("Breeze");
+            //System.out.println("Breeze");
         }
         else if(hint  == 20){
-            System.out.println("Stench");
+            //System.out.println("Stench");
         }
         else if(hint  == 30){
-            System.out.println("Glitter");
+            //System.out.println("Glitter");
         }
 
     }
@@ -987,24 +889,28 @@ public class App extends Application{
         for(int i=0;i <input.size(); i++){
             if(input.get(i).equals("RIGHT")){
                 player.moveRight();
+                isVisited[player.getPlayerLocation().getRow()][player.getPlayerLocation().getCol()] = 1;
                 player.checkStatus();
                 input.remove(i);
                 i--;
             }
             else if(input.get(i).equals("LEFT")){
                 player.moveLeft();
+                isVisited[player.getPlayerLocation().getRow()][player.getPlayerLocation().getCol()] = 1;
                 player.checkStatus();
                 input.remove(i);
                 i--;
             }
             else if(input.get(i).equals("UP")){
                 player.moveUp();
+                isVisited[player.getPlayerLocation().getRow()][player.getPlayerLocation().getCol()] = 1;
                 player.checkStatus();
                 input.remove(i);
                 i--;
             }
             else if(input.get(i).equals("DOWN")){
                 player.moveDown();
+                isVisited[player.getPlayerLocation().getRow()][player.getPlayerLocation().getCol()] = 1;
                 player.checkStatus();
                 input.remove(i);
                 i--;

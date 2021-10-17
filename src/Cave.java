@@ -19,7 +19,7 @@ public class Cave {
         visible = new boolean[10][10];
         //tiles[0][4] = WUMPUS;
         try {
-            FileInputStream inputStream = new FileInputStream(path + "grass.jpg");
+            FileInputStream inputStream = new FileInputStream(path + "g5.png");
             groundImage = new Image(inputStream,50,50,false,false);
             inputStream = new FileInputStream(path + "pit.png");
             pitImage = new Image(inputStream,50,50,false,false);

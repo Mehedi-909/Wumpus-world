@@ -90,26 +90,26 @@ public class App extends Application{
                 }
                 
                 //System.out.println("Button pressed");
-                AImove2();
+                AImove();
                 
             }
 
         });
 
-        Button manualPlayButton = new Button(); // Setting text to the button
-        manualPlayButton.setText("Manual Play");
-        manualPlayButton.setLayoutX(650);
-        manualPlayButton.setLayoutY(400);
-        root.getChildren().add(manualPlayButton);
+        // Button manualPlayButton = new Button(); // Setting text to the button
+        // manualPlayButton.setText("Manual Play");
+        // manualPlayButton.setLayoutX(650);
+        // manualPlayButton.setLayoutY(400);
+        // root.getChildren().add(manualPlayButton);
 
-        manualPlayButton.setOnAction(new EventHandler<ActionEvent>(){
-            @Override
-            public void handle(ActionEvent event) {
-                processInput();
+        // manualPlayButton.setOnAction(new EventHandler<ActionEvent>(){
+        //     @Override
+        //     public void handle(ActionEvent event) {
+        //         processInput();
 
-            }
+        //     }
 
-        });
+        // });
 
         Button randomButton = new Button(); // Setting text to the button
         randomButton.setText("Random World");
@@ -133,7 +133,7 @@ public class App extends Application{
                 // }
 
                 Random random2 = new Random();
-                int numberOfPit = random2.nextInt(5 - 3) + 3;
+                int numberOfPit = random2.nextInt(3 - 2) + 2;
 
                 for (int i = 0; i < numberOfPit; i++) {
 
@@ -256,7 +256,7 @@ public class App extends Application{
 
     
 
-    public void AImove2(){
+    public void AImove(){
 
         
 
@@ -269,11 +269,9 @@ public class App extends Application{
                     @Override
                     public void run() {
                         
-                        //call the method
-                        //AImove2();
-                        controlTimer();
+                        moveUsingLogic();
                         counter++;
-                        if (goldFound == true || isWumpusDead == true || isAgentDead == true){
+                        if (goldFound == true  || isAgentDead == true){
                             timer.cancel();
                             //System.out.println("Score : " + score);
                         }
@@ -285,7 +283,7 @@ public class App extends Application{
 
     }
 
-    public void controlTimer(){
+    public void moveUsingLogic(){
 
         //while(goldFound == false && isAgentDead == false ){
 
@@ -477,40 +475,51 @@ public class App extends Application{
             //from down to up
             if(cave.isValid(new Location(row-1,column-1)) && cave.isValid(new Location(row-1,column+1)) &&  cave.isValid(new Location(row-2, column))){
                 if(isStench[row-1][column-1] == 1 || isStench[row-1][column+1] == 1 || isStench[row-2][column] == 1){
-                    playScream();
-                    System.out.println("Wumpus in " + (row-1) + "," + column);
-                    Location location = new Location(row-1, column);
-                    cave.setTile(location, 404);
-                    score = score - 10;
-                    System.out.println("Score " + score);
-                    
-                    isWumpusDead = true;
+                    if(isVisited[row-1][column] == 0) {
+                        playScream();
+                        System.out.println("Wumpus in " + (row-1) + "," + column);
+                        System.out.println("Agent shoots arrow, wumpus is dead");
+                        Location location = new Location(row-1, column);
+                        cave.setTile(location, 404);
+                        score = score - 10;
+                        cave.setTile(location, 0);
+                        // System.out.println("Score " + score);
+                        
+                        isWumpusDead = true;
+                    }
                 }
                 
             }
             else if(cave.isValid(new Location(row-1,column+1)) && cave.isValid(new Location(row+1,column+1)) && cave.isValid(new Location(row,column+2))){
                 if(isStench[row-1][column+1] == 1 || isStench[row+1][column+1] == 1 || isStench[row][column+2] == 1){
-                    playScream();
-                    System.out.println("Wumpus in " + row + "," + (column+1));
-                    Location location = new Location(row, column+1);
-                    cave.setTile(location, 404);
-                    score = score - 10;
-                    System.out.println("Score " + score);
-                    playScream();
-                    isWumpusDead = true;
+                    if(isVisited[row-1][column] == 0) {
+                        playScream();
+                        System.out.println("Wumpus in " + row + "," + (column+1));
+                        System.out.println("Agent shoots arrow, wumpus is dead");
+                        Location location = new Location(row, column+1);
+                        cave.setTile(location, 404);
+                        score = score - 10;
+                        //System.out.println("Score " + score);
+                        cave.setTile(location, 0);
+                        isWumpusDead = true;
+                    }
+                    
                 }
 
             }
             else if(cave.isValid(new Location(row-1,column-1)) && cave.isValid(new Location(row+1,column-1)) && cave.isValid(new Location(row,column-2))){
                 if(isStench[row-1][column-1] == 1 || isStench[row+1][column-1] == 1 || isStench[row][column-2] == 1){
-                    playScream();
-                    System.out.println("Wumpus in " + row + "," + (column-1));
-                    Location location = new Location(row, column-1);
-                    cave.setTile(location, 404);
-                    score = score - 10;
-                    System.out.println("Score " + score);
-                    playScream();
-                    isWumpusDead = true;
+                    if(isVisited[row-1][column] == 0) {
+                        playScream();
+                        System.out.println("Wumpus in " + row + "," + (column-1));
+                        System.out.println("Agent shoots arrow, wumpus is dead");
+                        Location location = new Location(row, column-1);
+                        cave.setTile(location, 404);
+                        score = score - 10;
+                        //System.out.println("Score " + score);
+                        cave.setTile(location, 0);
+                        isWumpusDead = true;
+                    }
                 }
 
             }
@@ -525,11 +534,12 @@ public class App extends Application{
                     if(isVisited[row+1][column] == 0) {
                         playScream();
                         System.out.println("Wumpus in " + (row+1) + "," + column);
+                        System.out.println("Agent shoots arrow, wumpus is dead");
                         Location location = new Location(row+1, column);
                         cave.setTile(location, 404);
                         score = score - 10;
-                        System.out.println("Score " + score);
-                        playScream();
+                        //System.out.println("Score " + score);
+                        cave.setTile(location, 0);
                         isWumpusDead = true;
                     }
                     
@@ -543,11 +553,12 @@ public class App extends Application{
                     if(isVisited[row][column+1] == 0) {
                         playScream();
                         System.out.println("Wumpus in " + row + "," + (column+1));
+                        System.out.println("Agent shoots arrow, wumpus is dead");
                         Location location = new Location(row, column+1);
                         cave.setTile(location, 404);
                         score = score - 10;
-                        System.out.println("Score " + score);
-                        playScream();
+                        //System.out.println("Score " + score);
+                        cave.setTile(location, 0);
                         isWumpusDead = true;
                     }
                 }
@@ -559,11 +570,12 @@ public class App extends Application{
                     if(isVisited[row][column-1] == 0) {
                         playScream();
                         System.out.println("Wumpus in " + row + "," + (column-1));
+                        System.out.println("Agent shoots arrow, wumpus is dead");
                         Location location = new Location(row, column-1);
                         cave.setTile(location, 404);
                         score = score - 10;
-                        System.out.println("Score " + score);
-                        playScream();
+                        //System.out.println("Score " + score);
+                        cave.setTile(location, 0);
                         isWumpusDead = true;
                     }
                 }
@@ -581,11 +593,12 @@ public class App extends Application{
                     if(isVisited[row][column-1] == 0) {
                         playScream();
                         System.out.println("Wumpus in " + row + "," + (column-1));
+                        System.out.println("Agent shoots arrow, wumpus is dead");
                         Location location = new Location(row, column-1);
                         cave.setTile(location, 404);
                         score = score - 10;
-                        System.out.println("Score " + score);
-                        playScream();
+                        //System.out.println("Score " + score);
+                        cave.setTile(location, 0);
                         isWumpusDead = true;
                     }
                 }
@@ -597,11 +610,12 @@ public class App extends Application{
                     if(isVisited[row+1][column] == 0) {
                         playScream();
                         System.out.println("Wumpus in " + (row+1) + "," + column);
+                        System.out.println("Agent shoots arrow, wumpus is dead");
                         Location location = new Location(row+1, column);
                         cave.setTile(location, 404);
                         score = score - 10;
-                        System.out.println("Score " + score);
-                        playScream();
+                        //System.out.println("Score " + score);
+                        cave.setTile(location, 0);
                         isWumpusDead = true;
                     }
                 }
@@ -613,11 +627,12 @@ public class App extends Application{
                     if(isVisited[row-1][column] == 0) {
                         playScream();
                         System.out.println("Wumpus in " + (row-1) + "," + column);
+                        System.out.println("Agent shoots arrow, wumpus is dead");
                         Location location = new Location(row-1, column);
                         cave.setTile(location, 404);
                         score = score - 10;
-                        System.out.println("Score " + score);
-                        playScream();
+                        //System.out.println("Score " + score);
+                        cave.setTile(location, 0);
                         isWumpusDead = true;
                     }
                 }
@@ -633,11 +648,12 @@ public class App extends Application{
                     if(isVisited[row][column+1] == 0) {
                         playScream();
                         System.out.println("Wumpus in " + (row) + "," + (column+1));
+                        System.out.println("Agent shoots arrow, wumpus is dead");
                         Location location = new Location(row, column+1);
                         cave.setTile(location, 404);
                         score = score - 10;
-                        System.out.println("Score " + score);
-                        playScream();
+                        //System.out.println("Score " + score);
+                        cave.setTile(location, 0);
                         isWumpusDead = true;
                     }
                 }
@@ -649,11 +665,12 @@ public class App extends Application{
                     if(isVisited[row+1][column] == 0) {
                         playScream();
                         System.out.println("Wumpus in " + (row+1) + "," + column);
+                        System.out.println("Agent shoots arrow, wumpus is dead");
                         Location location = new Location(row+1, column);
                         cave.setTile(location, 404);
                         score = score - 10;
-                        System.out.println("Score " + score);
-                        playScream();
+                        //System.out.println("Score " + score);
+                        cave.setTile(location, 0);
                         isWumpusDead = true;
                     }
                 }
@@ -665,11 +682,12 @@ public class App extends Application{
                     if(isVisited[row-1][column] == 0) {
                         playScream();
                         System.out.println("Wumpus in " + (row-1) + "," + column);
+                        System.out.println("Agent shoots arrow, wumpus is dead");
                         Location location = new Location(row-1, column);
                         cave.setTile(location, 404);
                         score = score - 10;
-                        System.out.println("Score " + score);
-                        playScream();
+                        //System.out.println("Score " + score);
+                        cave.setTile(location, 0);
                         isWumpusDead = true;
                     }
                 }
@@ -697,20 +715,25 @@ public class App extends Application{
             //from down to up
             if(cave.isValid(new Location(row-1,column-1)) && cave.isValid(new Location(row-1,column+1)) &&  cave.isValid(new Location(row-2, column))){
                 if(isBreeze[row-1][column-1] == 1 || isBreeze[row-1][column+1] == 1 || isBreeze[row-2][column] == 1){
-                    
-                    System.out.println("Pit in " + (row-1) + "," + column);
+                    if(isVisited[row-1][column] == 0) {
+                        System.out.println("Pit in " + (row-1) + "," + column);
+                    }
                 }
                 
             }
             else if(cave.isValid(new Location(row-1,column+1)) && cave.isValid(new Location(row+1,column+1)) && cave.isValid(new Location(row,column+2))){
                 if(isBreeze[row-1][column+1] == 1 || isBreeze[row+1][column+1] == 1 || isBreeze[row][column+2] == 1){
-                    System.out.println("Pit in " + row + "," + (column+1));
+                    if(isVisited[row-1][column] == 0) {
+                        System.out.println("Pit in " + row + "," + (column+1));
+                    }
                 }
 
             }
             else if(cave.isValid(new Location(row-1,column-1)) && cave.isValid(new Location(row+1,column-1)) && cave.isValid(new Location(row,column-2))){
                 if(isBreeze[row-1][column-1] == 1 || isBreeze[row+1][column-1] == 1 || isBreeze[row][column-2] == 1){
-                    System.out.println("Pit in " + row + "," + (column-1));
+                    if(isVisited[row-1][column] == 0) {
+                        System.out.println("Pit in " + row + "," + (column-1));
+                    }
                 }
 
             }

@@ -10,9 +10,9 @@ public class Cave {
     private boolean visible[][];
     public static final int xOffset = 20;
     public static final int yOffset = 20;
-    public static final int GROUND = 0, PIT=1, WUMPUS=2, GOLD=3, WIND=10, STENCH=20, GLITTER=30;
+    public static final int GROUND = 0, PIT=1, WUMPUS=2, GOLD=3, WIND=10, STENCH=20, GLITTER=30, DEAD=404;
     private String path = "D:/6th Semester/JavaFx Projects/WumpusWorld/src/images/";
-    private Image groundImage,pitImage,wumpusImage,goldImage,windImage,stenchImage,glitterImage;
+    private Image groundImage,pitImage,wumpusImage,goldImage,windImage,stenchImage,deadImage;
 
     public Cave(){
         tiles = new int[10][10];
@@ -31,6 +31,8 @@ public class Cave {
             windImage = new Image(inputStream,50,50,false,false);
             inputStream = new FileInputStream(path + "stench.png");
             stenchImage = new Image(inputStream,50,50,false,false);
+            inputStream = new FileInputStream(path + "dead2.png");
+            deadImage = new Image(inputStream,50,50,false,false);
             
             
         } catch (FileNotFoundException e) {
@@ -63,6 +65,9 @@ public class Cave {
                 else if(tiles[row][col]==STENCH){
                     gc.drawImage(stenchImage, xOffset+(col*50), yOffset+(row*50));
                 }
+                else if(tiles[row][col]==DEAD){
+                    gc.drawImage(deadImage, xOffset+(col*50), yOffset+(row*50));
+                }
                 
             
             }
@@ -82,11 +87,14 @@ public class Cave {
     public Image getPitImage(){
         return pitImage;
     }
+    public Image getDeadImage(){
+        return deadImage;
+    }
 
     public void setTile(Location location, int tileID){
         if(isValid(location)){
             tiles[location.getRow()][location.getCol()] = tileID;
-            if(tileID != 3){
+            if(tileID != 3 && tileID != 404){
                 updateTileHints(tileID, location.getRow(), location.getCol());
 
             }

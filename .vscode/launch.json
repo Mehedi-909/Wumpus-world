@@ -14,7 +14,7 @@
             "type": "java",
             "name": "Launch App",
             "request": "launch",
-            "vmArgs": "--module-path G:/Latest/javafx-sdk-17.0.0.1/lib --add-modules javafx.controls,javafx.fxml",
+            "vmArgs": "--module-path G:/Latest/javafx-sdk-17.0.0.1/lib --add-modules javafx.controls,javafx.fxml,javafx.media",
             "mainClass": "App",
             "projectName": "WumpusWorld_f2b1d1c2"
         }

@@ -40,6 +40,7 @@ public class App extends Application{
     int rPrev = 9, cPrev = 0, n = 10;
     int[][] isVisited = new int[10][10];
     int[][] isBreeze = new int[10][10];
+    int[][] isStench = new int[10][10];
     Board [][] knowledgeBoard = new Board[10][10];
     Location cLocation;
     Location pLocation;
@@ -52,6 +53,11 @@ public class App extends Application{
         for(int i=0; i<10; i++){
             for(int j=0; j<10; j++){
                 isBreeze[i][j] = 0;
+            }
+        }
+        for(int i=0; i<10; i++){
+            for(int j=0; j<10; j++){
+                isStench[i][j] = 0;
             }
         }
         
@@ -88,6 +94,54 @@ public class App extends Application{
             }
 
         });
+
+        Button randomButton = new Button(); // Setting text to the button
+        randomButton.setText("Random World");
+        randomButton.setLayoutX(650);
+        randomButton.setLayoutY(450);
+        root.getChildren().add(randomButton);
+
+        randomButton.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+
+            public void handle(ActionEvent event) {
+                // System.out.println("Button works?");
+                String path = "src/images/";
+
+                // try {
+                //     FileInputStream inputStream = new FileInputStream(path + "pit.png");
+                //     pitImage = new Image(inputStream, 50, 50, false, false);
+                // } catch (FileNotFoundException e) {
+                //     // TODO Auto-generated catch block
+                //     e.printStackTrace();
+                // }
+
+                Random random2 = new Random();
+                int numberOfPit = random2.nextInt(5 - 3) + 3;
+
+                for (int i = 0; i < numberOfPit; i++) {
+
+                    int randomRow = random2.nextInt(9 - 0) + 0;
+                    int randomCol = random2.nextInt(9 - 0) + 0;
+                    Location location = new Location(randomRow, randomCol);
+                    cave.setTile(location, 1);
+
+                    // drawRandomWorld(gc, randomRow, randomCol);
+                }
+
+                int randomRow = random2.nextInt(9 - 0) + 0;
+                int randomCol = random2.nextInt(9 - 0) + 0;
+                Location location = new Location(randomRow, randomCol);
+                cave.setTile(location, 2);
+
+                int randomRow2 = random2.nextInt(9 - 0) + 0;
+                int randomCol2 = random2.nextInt(9 - 0) + 0;
+                Location location2 = new Location(randomRow2, randomCol2);
+                cave.setTile(location2, 3);
+            }
+
+        });
+
 
         
 
@@ -183,9 +237,7 @@ public class App extends Application{
         
     }
 
-    public void updateChaining(){
-
-    }
+    
 
     public void AImove2(){
 
@@ -204,7 +256,7 @@ public class App extends Application{
                         //AImove2();
                         controlTimer();
                         counter++;
-                        if (goldFound == true){
+                        if (goldFound == true || isWumpusDead == true){
                             timer.cancel();
                         }
                     }
@@ -353,106 +405,7 @@ public class App extends Application{
                 int rowTemp2 = player.getPlayerLocation().getRow();
                 int colTemp2 = player.getPlayerLocation().getCol();
 
-                // if(rowTemp < rowTemp2){
-                //     if(cave.isValid(new Location(rowTemp, colTemp+1))){
-                //         pRow = player.getPlayerLocation().getRow();
-                //         pCol = player.getPlayerLocation().getCol();
-                //         player.moveRight();
-
-                //         cRow = player.getPlayerLocation().getRow();
-                //         cCol = player.getPlayerLocation().getCol();
-                        
-                //         checkTile(player.checkStatus());
-
-                //     }
-                //     else if(cave.isValid(new Location(rowTemp, colTemp-1))){
-                //         pRow = player.getPlayerLocation().getRow();
-                //         pCol = player.getPlayerLocation().getCol();
-                //         player.moveLeft();
-
-                //         cRow = player.getPlayerLocation().getRow();
-                //         cCol = player.getPlayerLocation().getCol();
-                        
-                //         checkTile(player.checkStatus());
-
-                //     }
-                // }
-                // else if(rowTemp > rowTemp2){
-                //     if(cave.isValid(new Location(rowTemp, colTemp+1))){
-                //         pRow = player.getPlayerLocation().getRow();
-                //         pCol = player.getPlayerLocation().getCol();
-                //         player.moveRight();
-
-                //         cRow = player.getPlayerLocation().getRow();
-                //         cCol = player.getPlayerLocation().getCol();
-                        
-                //         checkTile(player.checkStatus());
-
-                //     }
-                //     else if(cave.isValid(new Location(rowTemp, colTemp-1))){
-
-                //         pRow = player.getPlayerLocation().getRow();
-                //         pCol = player.getPlayerLocation().getCol();
-                //         player.moveLeft();
-
-                //         cRow = player.getPlayerLocation().getRow();
-                //         cCol = player.getPlayerLocation().getCol();
-                        
-                //         checkTile(player.checkStatus());
-
-                //     }
-
-                // }
-                // else if(colTemp < colTemp2){
-                //     if(cave.isValid(new Location(rowTemp-1, colTemp))){
-                //         pRow = player.getPlayerLocation().getRow();
-                //         pCol = player.getPlayerLocation().getCol();
-                //         player.moveUp();
-
-                //         cRow = player.getPlayerLocation().getRow();
-                //         cCol = player.getPlayerLocation().getCol();
-                        
-                //         checkTile(player.checkStatus());
-
-                //     }
-                //     else if(cave.isValid(new Location(rowTemp+1, colTemp))){
-                //         pRow = player.getPlayerLocation().getRow();
-                //         pCol = player.getPlayerLocation().getCol();
-                //         player.moveDown();
-
-                //         cRow = player.getPlayerLocation().getRow();
-                //         cCol = player.getPlayerLocation().getCol();
-                        
-                //         checkTile(player.checkStatus());
-
-                //     }
-
-                // }
-                // else if(colTemp > colTemp2){
-                //     if(cave.isValid(new Location(rowTemp-1, colTemp))){
-                //         pRow = player.getPlayerLocation().getRow();
-                //         pCol = player.getPlayerLocation().getCol();
-                //         player.moveUp();
-
-                //         cRow = player.getPlayerLocation().getRow();
-                //         cCol = player.getPlayerLocation().getCol();
-                        
-                //         checkTile(player.checkStatus());
-
-                //     }
-                //     else if(cave.isValid(new Location(rowTemp+1, colTemp))){
-                //         pRow = player.getPlayerLocation().getRow();
-                //         pCol = player.getPlayerLocation().getCol();
-                //         player.moveDown();
-
-                //         cRow = player.getPlayerLocation().getRow();
-                //         cCol = player.getPlayerLocation().getCol();
-                        
-                //         checkTile(player.checkStatus());
-
-                //     }
-
-                // }
+                
                 int rowTemp3 = player.getPlayerLocation().getRow();
                 int colTemp3 = player.getPlayerLocation().getCol();
 
@@ -463,80 +416,21 @@ public class App extends Application{
                 //checkPit(pRow, pCol, cRow, cCol);
                 
 
-                //upper right
-                
-                // else {
-                //     if(cave.isValid(new Location(pRow, cCol))){
-
-                //         try {
-                //             knowledgeBoard[pRow][cCol].tileID = 1;
-                //         } catch (NullPointerException e) {
-                //             //TODO: handle exception
-                //             System.out.print("NullPointerException Caught");
-                //         }
-                        
-
-                //     }
-                    
-                // }
-
             }
             else if(hint  == 20){
                 System.out.println("Stench");
+                isStench[player.getPlayerLocation().getRow()][player.getPlayerLocation().getCol()] = 1;
                 cRow = player.getPlayerLocation().getRow();
                 cCol = player.getPlayerLocation().getCol(); 
+
+                Location previous = new Location(pRow, pCol);
+                Location current = new Location(player.getPlayerLocation().getRow(), player.getPlayerLocation().getCol());
+
+                isWumpusPresent(player.getPlayerLocation().getRow(), player.getPlayerLocation().getCol(),previous,current);
                 
                 player.move(new Location(pRow, pCol));
                 isVisited[player.getPlayerLocation().getRow()][player.getPlayerLocation().getCol()] = 1;
-                //upper right
-                if(pRow > cRow && cRow >= pCol && cCol < pCol){
-                    knowledgeBoard[cRow][pCol].tileID = 2;
-                    System.out.println("Wumpus in "+cRow + "," + pCol);
-
-                }
-                else if(pRow > cRow && cRow >= pCol && cCol > pCol){
-                    knowledgeBoard[cRow][pCol].tileID = 2;
-                    System.out.println("Wumpus in "+cRow + "," + pCol);
-
-                }
-                else if(pRow < cRow && cRow >= pCol && cCol > pCol){
-                    knowledgeBoard[cRow][pCol].tileID = 2;
-                    System.out.println("Wumpus in "+cRow + "," + pCol);
-                    
-                }
-                else if(pRow < cRow && cRow >= pCol && cCol < pCol){
-                    knowledgeBoard[cRow][pCol].tileID = 2;
-                    System.out.println("Wumpus in "+cRow + "," + pCol);
-                    
-                }
-
-                else if(pRow > cRow && cRow < pCol && cCol < pCol){
-                    knowledgeBoard[pRow][cCol].tileID = 2;
-                    System.out.println("Wumpus in "+pRow + "," + cCol);
-                    
-                }
-                else if(pRow < cRow && cRow < pCol && cCol < pCol){
-                    knowledgeBoard[pRow][cCol].tileID = 2;
-                    System.out.println("Wumpus in "+pRow + "," + cCol);
-                    
-                }
-                else if(pRow < cRow && cRow < pCol && cCol > pCol){
-                    knowledgeBoard[pRow][cCol].tileID = 2;
-                    System.out.println("Wumpus in "+pRow + "," + cCol);
-                    
-                }
-                else if(pRow > cRow && cRow < pCol && cCol > pCol){
-                    knowledgeBoard[pRow][cCol].tileID = 2;
-                    System.out.println("Wumpus in "+pRow + "," + cCol);
-                    
-                }
-                // else {
-                //     if(cave.isValid(new Location(pRow, cCol))){
-                //         knowledgeBoard[pRow][cCol].tileID = 2;
-
-                //     }
-                    
-                // }
+                
             }
             else if(hint  == 30){
                 System.out.println("Glitter");
@@ -544,6 +438,219 @@ public class App extends Application{
 
         //}
 
+    }
+
+    public void isWumpusPresent(int row, int column, Location previous, Location current){
+
+        if(previous.getRow() > current.getRow()){
+            //from down to up
+            if(cave.isValid(new Location(row-1,column-1)) && cave.isValid(new Location(row-1,column+1)) &&  cave.isValid(new Location(row-2, column))){
+                if(isStench[row-1][column-1] == 1 || isStench[row-1][column+1] == 1 || isStench[row-2][column] == 1){
+                    
+                    System.out.println("Wumpus in " + (row-1) + "," + column);
+                    Location location = new Location(row-1, column);
+                    cave.setTile(location, 404);
+                    String musicFile = "D:/6th Semester/JavaFx Projects/WumpusWorld/src/images/coffin.mp3";
+                    Media sound = new Media(new File(musicFile).toURI().toString());
+                    MediaPlayer mediaPlayer = new MediaPlayer(sound);
+                    mediaPlayer.play();
+                    isWumpusDead = true;
+                }
+                
+            }
+            else if(cave.isValid(new Location(row-1,column+1)) && cave.isValid(new Location(row+1,column+1)) && cave.isValid(new Location(row,column+2))){
+                if(isStench[row-1][column+1] == 1 || isStench[row+1][column+1] == 1 || isStench[row][column+2] == 1){
+                    System.out.println("Wumpus in " + row + "," + (column+1));
+                    Location location = new Location(row, column+1);
+                    cave.setTile(location, 404);
+                    String musicFile = "D:/6th Semester/JavaFx Projects/WumpusWorld/src/images/coffin.mp3";
+                    Media sound = new Media(new File(musicFile).toURI().toString());
+                    MediaPlayer mediaPlayer = new MediaPlayer(sound);
+                    mediaPlayer.play();
+                    isWumpusDead = true;
+                }
+
+            }
+            else if(cave.isValid(new Location(row-1,column-1)) && cave.isValid(new Location(row+1,column-1)) && cave.isValid(new Location(row,column-2))){
+                if(isStench[row-1][column-1] == 1 || isStench[row+1][column-1] == 1 || isStench[row][column-2] == 1){
+                    System.out.println("Wumpus in " + row + "," + (column-1));
+                    Location location = new Location(row, column-1);
+                    cave.setTile(location, 404);
+                    String musicFile = "D:/6th Semester/JavaFx Projects/WumpusWorld/src/images/coffin.mp3";
+                    Media sound = new Media(new File(musicFile).toURI().toString());
+                    MediaPlayer mediaPlayer = new MediaPlayer(sound);
+                    mediaPlayer.play();
+                    isWumpusDead = true;
+                }
+
+            }
+            
+            
+
+        }
+        else if(previous.getRow() < current.getRow()){
+            //from up to down
+            if(cave.isValid(new Location(row+1,column-1)) && cave.isValid(new Location(row+1,column+1)) && cave.isValid(new Location(row+2,column))){
+                if(isStench[row+1][column-1] == 1 || isStench[row+1][column+1] == 1 || isStench[row+2][column] == 1){
+                    if(isVisited[row+1][column] == 0) {
+                        System.out.println("Wumpus in " + (row+1) + "," + column);
+                        Location location = new Location(row+1, column);
+                        cave.setTile(location, 404);
+                        String musicFile = "D:/6th Semester/JavaFx Projects/WumpusWorld/src/images/coffin.mp3";
+                        Media sound = new Media(new File(musicFile).toURI().toString());
+                        MediaPlayer mediaPlayer = new MediaPlayer(sound);
+                        mediaPlayer.play();
+                        isWumpusDead = true;
+                    }
+                    
+                }
+                
+            }
+            
+            else if(cave.isValid(new Location(row-1,column+1)) && cave.isValid(new Location(row+1,column+1)) && cave.isValid(new Location(row,column+2))){
+                if(isStench[row-1][column+1] == 1 || isStench[row+1][column+1] == 1 || isStench[row][column+2] == 1){
+                   
+                    if(isVisited[row][column+1] == 0) {
+                        System.out.println("Wumpus in " + row + "," + (column+1));
+                        Location location = new Location(row, column+1);
+                        cave.setTile(location, 404);
+                        String musicFile = "D:/6th Semester/JavaFx Projects/WumpusWorld/src/images/coffin.mp3";
+                        Media sound = new Media(new File(musicFile).toURI().toString());
+                        MediaPlayer mediaPlayer = new MediaPlayer(sound);
+                        mediaPlayer.play();
+                        isWumpusDead = true;
+                    }
+                }
+
+            }
+            else if(cave.isValid(new Location(row-1,column-1)) && cave.isValid(new Location(row+1,column-1)) && cave.isValid(new Location(row,column-2))){
+                if(isStench[row-1][column-1] == 1 || isStench[row+1][column-1] == 1 || isStench[row][column-2] == 1){
+                    
+                    if(isVisited[row][column-1] == 0) {
+                        System.out.println("Wumpus in " + row + "," + (column-1));
+                        Location location = new Location(row, column-1);
+                        cave.setTile(location, 404);
+                        String musicFile = "D:/6th Semester/JavaFx Projects/WumpusWorld/src/images/coffin.mp3";
+                        Media sound = new Media(new File(musicFile).toURI().toString());
+                        MediaPlayer mediaPlayer = new MediaPlayer(sound);
+                        mediaPlayer.play();
+                        isWumpusDead = true;
+                    }
+                }
+
+            }
+            
+            
+        }
+        else if(previous.getCol() > current.getCol()){
+            //right to left
+
+            if(cave.isValid(new Location(row-1,column-1)) && cave.isValid(new Location(row+1,column-1)) && cave.isValid(new Location(row,column-2))){
+                if(isStench[row-1][column-1] == 1 || isStench[row+1][column-1] == 1 || isStench[row][column-2] == 1){
+                    
+                    if(isVisited[row][column-1] == 0) {
+                        System.out.println("Wumpus in " + row + "," + (column-1));
+                        Location location = new Location(row, column-1);
+                        cave.setTile(location, 404);
+                        String musicFile = "D:/6th Semester/JavaFx Projects/WumpusWorld/src/images/coffin.mp3";
+                        Media sound = new Media(new File(musicFile).toURI().toString());
+                        MediaPlayer mediaPlayer = new MediaPlayer(sound);
+                        mediaPlayer.play();
+                        isWumpusDead = true;
+                    }
+                }
+                
+            }
+            else if(cave.isValid(new Location(row+1,column+1)) && cave.isValid(new Location(row+1,column-1)) && cave.isValid(new Location(row+2,column))){
+                if(isStench[row+1][column+1] == 1 || isStench[row+1][column-1] == 1 || isStench[row+2][column] == 1){
+                    
+                    if(isVisited[row+1][column] == 0) {
+                        System.out.println("Wumpus in " + (row+1) + "," + column);
+                        Location location = new Location(row+1, column);
+                        cave.setTile(location, 404);
+                        String musicFile = "D:/6th Semester/JavaFx Projects/WumpusWorld/src/images/coffin.mp3";
+                        Media sound = new Media(new File(musicFile).toURI().toString());
+                        MediaPlayer mediaPlayer = new MediaPlayer(sound);
+                        mediaPlayer.play();
+                        isWumpusDead = true;
+                    }
+                }
+
+            }
+            else if(cave.isValid(new Location(row-1,column-1)) && cave.isValid(new Location(row-1,column+1)) && cave.isValid(new Location(row-2,column))){
+                if(isStench[row-1][column-1] == 1 || isStench[row-1][column+1] == 1 || isStench[row-2][column] == 1){
+                    
+                    if(isVisited[row-1][column] == 0) {
+                        System.out.println("Wumpus in " + (row-1) + "," + column);
+                        Location location = new Location(row-1, column);
+                        cave.setTile(location, 404);
+                        String musicFile = "D:/6th Semester/JavaFx Projects/WumpusWorld/src/images/coffin.mp3";
+                        Media sound = new Media(new File(musicFile).toURI().toString());
+                        MediaPlayer mediaPlayer = new MediaPlayer(sound);
+                        mediaPlayer.play();
+                        isWumpusDead = true;
+                    }
+                }
+
+            }
+            
+        }
+        else if(previous.getCol() < current.getCol()){
+            //left to right
+            if(cave.isValid(new Location(row-1,column+1)) && cave.isValid(new Location(row+1,column+1)) && cave.isValid(new Location(row,column+2))){
+                if(isStench[row-1][column+1] == 1 || isStench[row+1][column+1] == 1 || isStench[row][column+2] == 1){
+                    
+                    if(isVisited[row][column+1] == 0) {
+                        System.out.println("Wumpus in " + (row) + "," + (column+1));
+                        Location location = new Location(row, column+1);
+                        cave.setTile(location, 404);
+                        String musicFile = "D:/6th Semester/JavaFx Projects/WumpusWorld/src/images/coffin.mp3";
+                        Media sound = new Media(new File(musicFile).toURI().toString());
+                        MediaPlayer mediaPlayer = new MediaPlayer(sound);
+                        mediaPlayer.play();
+                        isWumpusDead = true;
+                    }
+                }
+                
+            }
+            else if(cave.isValid(new Location(row+1,column+1)) && cave.isValid(new Location(row+1,column-1)) && cave.isValid(new Location(row+2,column))){
+                if(isStench[row+1][column+1] == 1 || isStench[row+1][column-1] == 1 || isStench[row+2][column] == 1){
+                   
+                    if(isVisited[row+1][column] == 0) {
+                        System.out.println("Wumpus in " + (row+1) + "," + column);
+                        Location location = new Location(row+1, column);
+                        cave.setTile(location, 404);
+                        String musicFile = "D:/6th Semester/JavaFx Projects/WumpusWorld/src/images/coffin.mp3";
+                        Media sound = new Media(new File(musicFile).toURI().toString());
+                        MediaPlayer mediaPlayer = new MediaPlayer(sound);
+                        mediaPlayer.play();
+                        isWumpusDead = true;
+                    }
+                }
+
+            }
+            else if(cave.isValid(new Location(row-1,column-1)) && cave.isValid(new Location(row-1,column+1)) && cave.isValid(new Location(row-2,column))){
+                if(isStench[row-1][column-1] == 1 || isStench[row-1][column+1] == 1 || isStench[row-2][column] == 1){
+                    
+                    if(isVisited[row-1][column] == 0) {
+                        System.out.println("Wumpus in " + (row-1) + "," + column);
+                        Location location = new Location(row-1, column);
+                        cave.setTile(location, 404);
+                        String musicFile = "D:/6th Semester/JavaFx Projects/WumpusWorld/src/images/coffin.mp3";
+                        Media sound = new Media(new File(musicFile).toURI().toString());
+                        MediaPlayer mediaPlayer = new MediaPlayer(sound);
+                        mediaPlayer.play();
+                        isWumpusDead = true;
+                    }
+                }
+
+            }
+            
+            
+        }
+
+        
+        
     }
 
     public void isPitPresent(int row, int column, Location previous, Location current){
@@ -718,133 +825,9 @@ public class App extends Application{
         }
     }
 
-    public void AImove(){
-        int count = 0;
-
-        while(goldFound == false && isAgentDead == false ){
-            int hint = player.checkStatus();
-            Location curLocation = player.getPlayerLocation();
-            int currentRow = curLocation.getRow();
-            int currentColumn = curLocation.getCol();
-
-            int r = currentRow;
-            int c = currentColumn;
-            boolean foundNewPath = false;
+    
 
 
-            if(r >= 1 && !((r-1) == rPrev && c == cPrev) && (cave.getTileStatus(r-1, c) ==0 || cave.getTileStatus(r-1, c) ==3 ) && isVisited[r-1][c] ==0 ) {
-                //System.out.println("1");
-   			 rPrev = r;
-   			 cPrev = c;
-   			 
-   			 r--;
-   			 foundNewPath = true;
-                Location newLocation = new Location(r, c);
-                isVisited[r][c] =1;
-                
-                player.move(newLocation);
-                //System.out.println(r + " " + c);
-                //player.moveRight();
-                checkTile(player.checkStatus());
-                count++;
-   		    }
-
-            else if(r <= (n-2) && !((r+1) == rPrev && c == cPrev) && (cave.getTileStatus(r+1, c) ==0 || cave.getTileStatus(r+1, c) ==3 ) && isVisited[r+1][c] ==0) {
-                //System.out.println("2");
-   			 rPrev = r;
-   			 cPrev = c;
-   			 
-   			 r++;
-   			 foundNewPath = true;
-                Location newLocation = new Location(r, c);
-                isVisited[r][c] =1;
-                player.move(newLocation);
-                //System.out.println(r + " " + c);
-                checkTile(player.checkStatus());
-                count++;
-   		 }
-   		 else if(c >= 1 && !(r == rPrev && (c-1) == cPrev) && (cave.getTileStatus(r, c-1) ==0 || cave.getTileStatus(r, c-1) ==3 ) && isVisited[r][c-1] ==0 ) {
-            //System.out.println("3");
-   			 rPrev = r;
-   			 cPrev = c;
-   			 
-   			 c--;
-   			 foundNewPath = true;
-                Location newLocation = new Location(r, c);
-                isVisited[r][c] =1;
-                player.move(newLocation);
-                //System.out.println(r + " " + c);
-                checkTile(player.checkStatus());
-                count++;
-   		 }
-   		 else if(c <= (n-2) && !(r == rPrev && (c+1) == cPrev) && (cave.getTileStatus(r, c+1) ==0 || cave.getTileStatus(r, c+1) ==3 )  && isVisited[r][c+1] ==0) {
-            //System.out.println("4");
-   			 rPrev = r;
-   			 cPrev = c;
-   			 
-   			 c++;
-   			 foundNewPath = true;
-                Location newLocation = new Location(r, c);
-                isVisited[r][c] =1;
-                player.move(newLocation);
-                //System.out.println(r + " " + c);
-                checkTile(player.checkStatus());
-                count++;
-   		 }
-   		 
-   		 if(!foundNewPath) {
-            //System.out.println("5");
-   			 int temp1 = rPrev;
-   			 int temp2 = cPrev;
-   			 
-   			 rPrev = r;
-   			 cPrev = c;
-   			 
-   			 r = temp1;
-   			 c = temp2;
-                Location newLocation = new Location(r, c);
-                isVisited[r][c] =1;
-                player.move(newLocation);
-                checkTile(player.checkStatus());
-                count++;
-   		 }
-
-            // Random random = new Random();
-            // int low = 1;
-            // int high = 5;
-            // int result = random.nextInt(high-low) + low;
-
-            // if(result == 1){
-            //     player.moveRight();
-            //     checkTile(player.checkStatus());
-            //     // if(player.checkStatus() == 3){
-            //     //     goldFound = true;
-            // //     System.out.println("Gold found");
-
-            //     // }
-            // }
-            // else if(result == 2){
-            //     player.moveLeft();
-            //     checkTile(player.checkStatus());
-            
-            // }
-            // else if(result == 3){
-            //     player.moveUp();
-            //     checkTile(player.checkStatus());
-            // }
-            // else{
-            //     player.moveDown();
-            //     checkTile(player.checkStatus());
-            // }
-
-
-        }
-
-        
-
-        
-
-    }
 
     public void checkTile(int hint){
 
